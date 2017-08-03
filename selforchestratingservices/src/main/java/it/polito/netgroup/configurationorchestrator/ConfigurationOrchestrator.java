@@ -1,0 +1,27 @@
+package it.polito.netgroup.configurationorchestrator;
+
+import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+public interface ConfigurationOrchestrator
+{
+	public ConfigurationSDN getConfiguration(VnfForConfiguration vnf)
+			throws ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorConfigurationNotFoundException,
+			ConfigurationOrchestratorAuthenticationException, ConfigurationOrchestratorNotAuthenticatedException, ConfigurationorchestratorUnsupportedFunctionalCapabilityException;
+
+	public void setConfiguration(ConfigurationSDN configuration)
+			throws JsonProcessingException, ConfigurationOrchestratorHTTPException,
+			ConfigurationOrchestratorNotAuthenticatedException, ConfigurationOrchestratorAuthenticationException;
+
+	public void removeConfiguration(String tenant_id, String nffg_id, String vnf_id)
+			throws ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorAuthenticationException,
+			ConfigurationOrchestratorNotAuthenticatedException;
+	public List<StartedVNF> getStartedVNF()
+			throws ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorAuthenticationException,
+			ConfigurationOrchestratorConfigurationNotFoundException, ConfigurationOrchestratorNotAuthenticatedException;
+
+	
+	public void waitUntilStarted(VnfForConfigurationInterface vnfC) throws InterruptedException,
+			ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorAuthenticationException,
+			ConfigurationOrchestratorConfigurationNotFoundException, ConfigurationOrchestratorNotAuthenticatedException;
+}
