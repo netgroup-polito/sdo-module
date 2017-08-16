@@ -16,7 +16,8 @@ public interface InfrastructureResource extends Resource
 	public ConfigurationSDN getConfiguration();
 	public boolean equals(Object obj);
 	public InfrastructureResource copy();
-	public List<DeclarativeFlowRule> getFlowRules();
+	//public List<DeclarativeFlowRule> getDefaultFlowRules();
 	public void setDefaultFlowRules(List<DeclarativeFlowRule> defaultFlowRules);
+	public List<DeclarativeFlowRule> getFlowRules();
 	public boolean isVNF();
 }

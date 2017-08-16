@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface ConfigurationOrchestrator
 {
-	public ConfigurationSDN getConfiguration(VnfForConfiguration vnf)
+	public ConfigurationSDN getConfiguration(VnfForConfigurationInterface vnf)
 			throws ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorConfigurationNotFoundException,
 			ConfigurationOrchestratorAuthenticationException, ConfigurationOrchestratorNotAuthenticatedException, ConfigurationorchestratorUnsupportedFunctionalCapabilityException;
 

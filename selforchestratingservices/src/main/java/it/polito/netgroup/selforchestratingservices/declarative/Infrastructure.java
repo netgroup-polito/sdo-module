@@ -19,6 +19,6 @@ public interface Infrastructure
 	
 	void addHandler(String event_name, EventHandler handler);
 
-	void raiseEvent(String event_name, String from_name, Object fromobj, InfrastructureResource on_resource);
+	void raiseEvent(String event_name, String from_name, Object fromobj, InfrastructureResource on_resource, Object args);
 
 }

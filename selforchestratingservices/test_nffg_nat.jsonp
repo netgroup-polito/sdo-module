@@ -5,6 +5,42 @@
       {
         "ports": [
           {
+            "id": "management:2",
+            "name": "",
+            "gui-position": {
+              "x": 25,
+              "y": 0
+            }
+          },
+          {
+            "id": "User:1",
+            "name": "",
+            "gui-position": {
+              "x": 75,
+              "y": 0
+            }
+          },
+          {
+            "id": "WAN:0",
+            "name": "",
+            "gui-position": {
+              "x": 125,
+              "y": 0
+            }
+          }
+        ],
+        "vnf_template": "nat",
+        "id": "NATbhr",
+        "name": "NATbhr",
+        "functional-capability": "nat",
+        "gui-position": {
+          "x": 861,
+          "y": 637
+        }
+      },
+      {
+        "ports": [
+          {
             "id": "inout:0",
             "name": "",
             "gui-position": {
@@ -440,6 +476,30 @@
         {
           "priority": 1,
           "match": {
+            "port_in": "vnf:NATbhr:WAN:0"
+          },
+          "id": "NAT_SWITCH_WAN",
+          "actions": [
+            {
+              "output_to_port": "vnf:SWITCH_WAN:port10:9"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:SWITCH_WAN:port10:9"
+          },
+          "id": "SWITCH_WAN_NAT",
+          "actions": [
+            {
+              "output_to_port": "vnf:NATbhr:WAN:0"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
             "port_in": "endpoint:INTERNET_ENDPOINT"
           },
           "id": "INTERNET_SWITCH_WAN",
@@ -482,6 +542,54 @@
           "actions": [
             {
               "output_to_port": "vnf:SWITCH_MAN:port10:9"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:SWITCH_MAN:port9:8"
+          },
+          "id": "SWITCH_MAN_NAT",
+          "actions": [
+            {
+              "output_to_port": "vnf:NATbhr:management:2"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:NATbhr:management:2"
+          },
+          "id": "NAT_SWITCH_MAN",
+          "actions": [
+            {
+              "output_to_port": "vnf:SWITCH_MAN:port9:8"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:SWITCH_LAN:port2:1"
+          },
+          "id": "LB_DEFAULT_0",
+          "actions": [
+            {
+              "output_to_port": "vnf:NATbhr:User:1"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:NATbhr:User:1"
+          },
+          "id": "LB_REPLY_0",
+          "actions": [
+            {
+              "output_to_port": "vnf:SWITCH_LAN:port2:1"
             }
           ]
         }

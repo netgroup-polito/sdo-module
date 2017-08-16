@@ -1,4 +1,4 @@
-package it.polito.netgroup.selforchestratingservices.declarative;
+package it.polito.netgroup.selforchestratingservices.declarative.monitors;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -6,10 +6,13 @@ import java.util.Map.Entry;
 import it.polito.netgroup.configurationorchestrator.ConfigurationOrchestrator;
 import it.polito.netgroup.configurationorchestrator.ConfigurationOrchestratorFrog4;
 import it.polito.netgroup.configurationorchestrator.VnfForConfiguration;
+import it.polito.netgroup.configurationorchestrator.VnfForConfigurationInterface;
 import it.polito.netgroup.natmonitor.NatEventHandler;
 import it.polito.netgroup.natmonitor.NatMonitor;
 import it.polito.netgroup.nffg.json.Host;
 import it.polito.netgroup.nffg.json.IpNetwork;
+import it.polito.netgroup.selforchestratingservices.declarative.Infrastructure;
+import it.polito.netgroup.selforchestratingservices.declarative.InfrastructureResource;
 
 public class NatMonitorV2 implements Monitor
 {
@@ -20,7 +23,7 @@ public class NatMonitorV2 implements Monitor
 	NatEventHandler event;
 	IpNetwork lan;
 	Infrastructure infrastructure;
-	HashMap<InfrastructureResource,VnfForConfiguration> map;
+	HashMap<InfrastructureResource,VnfForConfigurationInterface> map;
 	
 	public NatMonitorV2()
 	{
@@ -37,32 +40,35 @@ public class NatMonitorV2 implements Monitor
 		{
 			
 			@Override
-			public boolean on_nat_fault(VnfForConfiguration nat)
+			public boolean on_nat_fault(VnfForConfigurationInterface nat)
 			{
-				infrastructure.raiseEvent("on_NAT_fault", "NatMonitorV2", thiz, thiz.getResourceFor(nat));
+				InfrastructureResource r = thiz.getResourceFor(nat);
+				infrastructure.raiseEvent("on_NAT_fault", "NatMonitorV2", thiz, r,r);
 				return true;
 			}
 
 
 			@Override
-			public boolean on_host_new(Host n)
+			public boolean on_host_new(VnfForConfigurationInterface nat,Host host)
 			{
-				// TODO Auto-generated method stub
-				return false;
+				InfrastructureResource r = thiz.getResourceFor(nat);
+				infrastructure.raiseEvent("on_host_new", "NatMonitorV2", thiz, r,host);
+				return true;
 			}
 			
 			@Override
-			public boolean on_host_left(Host n)
+			public boolean on_host_left(VnfForConfigurationInterface nat,Host host)
 			{
-				// TODO Auto-generated method stub
-				return false;
+				InfrastructureResource r = thiz.getResourceFor(nat);
+				infrastructure.raiseEvent("on_host_left", "NatMonitorV2", thiz, r,host);
+				return true;
 			}
 		};
 	}
 	
-	protected InfrastructureResource getResourceFor(VnfForConfiguration nat)
+	protected InfrastructureResource getResourceFor(VnfForConfigurationInterface nat)
 	{
-		for(Entry<InfrastructureResource, VnfForConfiguration> entry : map.entrySet())
+		for(Entry<InfrastructureResource, VnfForConfigurationInterface> entry : map.entrySet())
 		{
 			if ( entry.getValue().getId().equals(nat.getId()))
 			{

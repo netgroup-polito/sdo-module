@@ -17,7 +17,6 @@ public class NatInfrastructureResource extends AbstractBasicInfrastructureResour
 		return new NatInfrastructureResource(id);
 	}
 
-
 	@Override
 	public boolean isVNF()
 	{

@@ -1,10 +1,13 @@
-package it.polito.netgroup.selforchestratingservices.declarative;
+package it.polito.netgroup.selforchestratingservices.declarative.monitors;
 
 import java.util.Set;
 
 import org.reflections.Reflections;
-
 import it.polito.netgroup.configurationorchestrator.ConfigurationOrchestratorFrog4;
+import it.polito.netgroup.selforchestratingservices.declarative.Infrastructure;
+import it.polito.netgroup.selforchestratingservices.declarative.InfrastructureImplementation;
+import it.polito.netgroup.selforchestratingservices.declarative.InfrastructureResource;
+
 
 public interface Monitor
 {
@@ -18,7 +21,7 @@ public interface Monitor
 	public void setInfrastructure(Infrastructure infrastructure);
 
 	public static Monitor getMonitor(String type, InfrastructureImplementation infrastructureImplementation)
-	{
+	{		
 		Reflections reflections = new Reflections(Monitor.class.getPackage());    
 		Set<Class<? extends Monitor>> classes = reflections.getSubTypesOf(Monitor.class);
 		

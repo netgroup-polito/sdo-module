@@ -315,4 +315,10 @@ public class NF_FGExtended extends NF_FG
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void removeVNF(String id)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

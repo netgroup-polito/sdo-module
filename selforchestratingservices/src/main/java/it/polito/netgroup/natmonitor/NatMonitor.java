@@ -16,6 +16,7 @@ import it.polito.netgroup.configurationorchestrator.ConfigurationSDN;
 import it.polito.netgroup.configurationorchestrator.ConfigurationorchestratorUnsupportedFunctionalCapabilityException;
 import it.polito.netgroup.configurationorchestrator.NatConfiguration;
 import it.polito.netgroup.configurationorchestrator.VnfForConfiguration;
+import it.polito.netgroup.configurationorchestrator.VnfForConfigurationInterface;
 import it.polito.netgroup.configurationorchestrator.json.nat.ArpEntry;
 import it.polito.netgroup.configurationorchestrator.json.nat.NatSession;
 import it.polito.netgroup.nffg.json.Host;
@@ -29,7 +30,7 @@ public class NatMonitor
 	private NatEventHandler natEventHandler;
 	private int timeout_left_ms;
 	private int polling_ms;
-	private List<VnfForConfiguration> nats;
+	private List<VnfForConfigurationInterface> nats;
 	private Map<String,ActiveHostEntry> active_hosts;
 
 	public NatMonitor(ConfigurationOrchestrator _configurationService, NatEventHandler _natEventHandler,
@@ -43,12 +44,12 @@ public class NatMonitor
 		active_hosts = new HashMap<>();
 	}
 
-	public void addNat(VnfForConfiguration nat)
+	public void addNat(VnfForConfigurationInterface nat)
 	{
 		nats.add(nat);
 	}
 
-	public void removeNat(VnfForConfiguration nat)
+	public void removeNat(VnfForConfigurationInterface nat)
 	{
 		nats.remove(nat);
 	}
@@ -66,9 +67,9 @@ public class NatMonitor
 
 	public void check_events(IpNetwork lan_network)
 	{
-		List<VnfForConfiguration> natscopy = new ArrayList<>(nats);
+		List<VnfForConfigurationInterface> natscopy = new ArrayList<>(nats);
 		
-		for (VnfForConfiguration nat : natscopy)
+		for (VnfForConfigurationInterface nat : natscopy)
 		{
 			Map<String,String> arpTable = new HashMap<>();
 			
@@ -140,11 +141,11 @@ public class NatMonitor
 				}
 				for(ActiveHostEntry host_new : new_hosts)
 				{
-					natEventHandler.on_host_new(host_new.getHost());
+					natEventHandler.on_host_new(configuration,host_new.getHost());
 				}
 				for(ActiveHostEntry host_left : left_hosts)
 				{
-					natEventHandler.on_host_left(host_left.getHost());
+					natEventHandler.on_host_left(configuration,host_left.getHost());
 					active_hosts.remove(host_left.getHost().getIp());
 				}
 			}

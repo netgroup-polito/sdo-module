@@ -185,19 +185,19 @@ public class SelfOrchestratorImperativo
 
 
 				@Override
-				public boolean on_host_new(Host h)
+				public boolean on_host_new(VnfForConfigurationInterface nat,Host host)
 				{
-					return on_host_newA(h, null);
+					return on_host_newA(host, null);
 				}
 
 				@Override
-				public boolean on_host_left(Host h)
+				public boolean on_host_left(VnfForConfigurationInterface nat,Host host)
 				{
-					return on_host_leftA(h);
+					return on_host_leftA(host);
 				}
 
 				@Override
-				public boolean on_nat_fault(VnfForConfiguration nat)
+				public boolean on_nat_fault(VnfForConfigurationInterface nat)
 				{
 					return on_nat_faultA(nat);
 				}
@@ -274,7 +274,7 @@ public class SelfOrchestratorImperativo
 		}
 	}
 
-	public boolean on_nat_faultA(VnfForConfiguration nat)
+	public boolean on_nat_faultA(VnfForConfigurationInterface nat)
 	{
 		try
 		{
@@ -304,7 +304,7 @@ public class SelfOrchestratorImperativo
 			{
 				// LOGGER.log(Level.INFO,"'%s' is the default NAT" % nat_name)
 
-				nffg.removeVNF(nat);
+				nffg.removeVNF(nat.getId());
 
 				String vnf_name = "NAT" + random_str + counter;
 				counter++;
@@ -371,7 +371,7 @@ public class SelfOrchestratorImperativo
 			load_balancer.remove_host(nffg, mac);
 
 			// LOGGER.log(Level.FINE,"Removing the VNF with name '%s'" % nat_name)
-			nffg.removeVNF(nat);
+			nffg.removeVNF(nat.getId());
 
 			return on_host_newA(host, nffg);
 		}catch (JsonProcessingException e)

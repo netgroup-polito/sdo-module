@@ -136,8 +136,6 @@ public class App
 			System.exit(1);
 		}
 
-		
-		
 		SelfOrchestratorDichiarativo sod = new SelfOrchestratorDichiarativoNAT(infrastructure);
 		sod.newServiceState();
 

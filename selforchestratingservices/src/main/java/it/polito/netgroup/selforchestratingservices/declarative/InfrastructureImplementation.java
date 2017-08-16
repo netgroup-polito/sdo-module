@@ -17,7 +17,6 @@ import it.polito.netgroup.datastoreclient.DatastoreClientAuthenticationException
 import it.polito.netgroup.datastoreclient.DatastoreClientHTTPException;
 import it.polito.netgroup.datastoreclient.DatastoreClientNotAuthenticatedException;
 import it.polito.netgroup.datastoreclient.DatastoreClientTemplateNotFoundException;
-import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorUniversalNode;
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestrator;
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorAuthenticationException;
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorHTTPException;
@@ -35,6 +34,7 @@ import it.polito.netgroup.nffg_template.json.NF_FGTemplateExtended;
 import it.polito.netgroup.nffg_template.json.NotImplementedYetException;
 import it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.LoadBalancerInfrastructureResource;
 import it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource;
+import it.polito.netgroup.selforchestratingservices.declarative.monitors.Monitor;
 
 public class InfrastructureImplementation implements Infrastructure
 {
@@ -186,7 +186,6 @@ public class InfrastructureImplementation implements Infrastructure
 				| InfrastructureOrchestratorNotAuthenticatedException
 				| InfrastructureOrchestratorNF_FGNotFoundException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         //NF_FGExtended nffg = NF_FG(self.nffg_name, self.nffg_name)
@@ -207,7 +206,6 @@ public class InfrastructureImplementation implements Infrastructure
 						nffg.addVNF(vnf);
 					} catch (DuplicateVNFException e)
 					{
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 	        		}
@@ -215,29 +213,29 @@ public class InfrastructureImplementation implements Infrastructure
         			for(DeclarativeFlowRule dfr : resource.getFlowRules())
         			{
         				try
+					{
+						for ( FlowRule flowRule : buildFlowRules(nffg,resource,dfr) )
 						{
-							for ( FlowRule flowRule : buildFlowRules(nffg,resource,dfr) )
-							{
-								try
+							try
 							{
 								nffg.addFlowRule(flowRule);
-							} catch (DuplicateFlowRuleException e)
+							}
+							catch (DuplicateFlowRuleException e)
 							{
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							}
-						} catch (Exception e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						}
+					}
+    					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
         			}
         			
-        			 if ( resource.getConfiguration() != null )
-        			 {
-        				 configurationQueue.add(resource);
-        			 }
+				if ( resource.getConfiguration() != null )
+				{
+					configurationQueue.add(resource);
+				}
         		}
         }
 
@@ -248,7 +246,6 @@ public class InfrastructureImplementation implements Infrastructure
 				| InfrastructureOrchestratorAuthenticationException
 				| InfrastructureOrchestratorNotAuthenticatedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
      
@@ -270,15 +267,13 @@ public class InfrastructureImplementation implements Infrastructure
 					| ConfigurationOrchestratorConfigurationNotFoundException
 					| ConfigurationOrchestratorNotAuthenticatedException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (JsonProcessingException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
             
-            raiseEvent("on_"+resource.getType()+"_added","INFRASTRUCTURE",this,resource);
+            raiseEvent("on_"+resource.getType()+"_added","INFRASTRUCTURE",this,resource,resource);
 
             if  ( monitors.get(resource.getType()) == null )
             	{
@@ -296,13 +291,13 @@ public class InfrastructureImplementation implements Infrastructure
 	}
 	
 	
-	public void raiseEvent(String event_name, String from_name, Object fromobj, InfrastructureResource on_resource)
+	public void raiseEvent(String event_name, String from_name, Object fromobj, InfrastructureResource on_resource, Object args)
 	{
 		if (handlers.get(event_name) != null)
 		{
 			for(EventHandler handler : handlers.get(event_name))
 			{
-				handler.fire(event_name,from_name,fromobj,on_resource);
+				handler.fire(event_name,from_name,fromobj,on_resource,args);
 			}
 		}
 	}
@@ -380,13 +375,13 @@ public class InfrastructureImplementation implements Infrastructure
 		}
 			       
 
-		if ( nffg.existPort(vnf_port_from) )
+		if ( !nffg.existPort(vnf_port_from) )
 		{
-			throw new Exception("Port with id:"+vnf_port_from+" is invalid");
+			throw new Exception("Port with id:"+vnf_port_from.getValue()+" is invalid");
 		}
-		if ( nffg.existPort(vnf_port_to) )
+		if ( !nffg.existPort(vnf_port_to) )
 		{
-			throw new Exception("Port with id:"+vnf_port_to+" is invalid");
+			throw new Exception("Port with id:"+vnf_port_to.getValue()+" is invalid");
 		}
 
 		Action actionFr1 = new Action();

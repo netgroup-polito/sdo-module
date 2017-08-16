@@ -1,19 +1,20 @@
 package it.polito.netgroup.selforchestratingservices.declarative;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public abstract class SelfOrchestratorDichiarativoAbstract implements SelfOrchestratorDichiarativo
+public abstract class AbstractSelfOrchestrator implements SelfOrchestratorDichiarativo
 {
 	private String name;
-	private List<ElementaryService> elementaryServices;
+	private HashMap<String,ElementaryService> elementaryServices;
 	private Infrastructure infrastructure;
 
-	protected void init(String name, List<ElementaryService> elementaryServices,
+	protected void init(String name, HashMap<String, ElementaryService> elementaryServices2,
 			Infrastructure infrastructure)
 	{
 		this.name = name;
-		this.elementaryServices = elementaryServices;
+		this.elementaryServices = elementaryServices2;
 		this.infrastructure = infrastructure;
 	}
 	
@@ -32,14 +33,14 @@ public abstract class SelfOrchestratorDichiarativoAbstract implements SelfOrches
 	@Override
 	public List<ElementaryService> getElementaryServices()
 	{
-		return elementaryServices;
+		return new ArrayList<>(elementaryServices.values());
 	}
 	
 	@Override
 	public void newServiceState()
 	{
 		infrastructure.freeAllResources();
-		for (ElementaryService elementaryService : elementaryServices)
+		for (ElementaryService elementaryService : elementaryServices.values())
 		{
 			RealizedImplementation realizedImplementation = null;
 			for (Implementation implementation : elementaryService.getImplementations())
@@ -51,6 +52,7 @@ public abstract class SelfOrchestratorDichiarativoAbstract implements SelfOrches
 					{
 						//infrastructureResource.setUsed();
 						infrastructureResource.setConfiguration(resourceRequirement.getDefaultConfiguration());
+						infrastructureResource.setDefaultFlowRules(resourceRequirement.getDefaultFlowRules());
 						resources_used.add(infrastructureResource);
 						
 						if (realizedImplementation == null || realizedImplementation.qos() < implementation.getQoS(resources_used))

@@ -41,6 +41,9 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 	public void authenticate()
 			throws ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorAuthenticationException
 	{
+		LOGGER.info("Trying authentication...");
+
+		
 		RequestConfig config = RequestConfig.custom().setConnectionRequestTimeout(timeout_ms)
 				.setConnectTimeout(timeout_ms).setSocketTimeout(timeout_ms).build();
 
@@ -60,24 +63,31 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 			response = client.execute(request);
 		} catch (IOException e)
 		{
+			LOGGER.warning("HTTP IO Error : " + e.getMessage());
 			throw new ConfigurationOrchestratorHTTPException("HTTP IO Error : " + e.getMessage());
 		}
 
 		int http_status = response.getStatusLine().getStatusCode();
+		LOGGER.fine("HTTP STATUS:"+http_status);
+		
 		if (http_status == 200)
 		{
 			try
 			{
 				auth_token = HttpResponseReader.getContent(response);
+				LOGGER.fine("AUTHENTICATION TOKEN:"+auth_token);
+
 			} catch (UnsupportedOperationException | IOException e)
 			{
+				LOGGER.warning("HTTP IO Error : " + e.getMessage());
 				throw new ConfigurationOrchestratorHTTPException("HTTP IO Error : " + e.getMessage());
 			}
 		}
+		LOGGER.warning("Invalid HTTP Status : " + http_status);
 		throw new ConfigurationOrchestratorAuthenticationException("Invalid HTTP Status : " + http_status);
 	}
 
-	public ConfigurationSDN getConfiguration(VnfForConfiguration vnf)
+	public ConfigurationSDN getConfiguration(VnfForConfigurationInterface vnf)
 			throws ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorConfigurationNotFoundException,
 			ConfigurationOrchestratorAuthenticationException, ConfigurationOrchestratorNotAuthenticatedException, ConfigurationorchestratorUnsupportedFunctionalCapabilityException
 	{
@@ -136,6 +146,8 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 	private List<StartedVNF> _getStartedVNF() throws ConfigurationOrchestratorConfigurationNotFoundException,
 			ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorNotAuthenticatedException
 	{
+		LOGGER.info("Trying to get started VNF");
+
 		RequestConfig config = RequestConfig.custom().setConnectionRequestTimeout(timeout_ms)
 				.setConnectTimeout(timeout_ms).setSocketTimeout(timeout_ms).build();
 
@@ -152,34 +164,43 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 			response = client.execute(request);
 		} catch (IOException e)
 		{
+			LOGGER.severe("HTTP IO Error : " + e.getMessage());
 			throw new ConfigurationOrchestratorHTTPException("HTTP IO Error : " + e.getMessage());
 		}
 
 		int http_status = response.getStatusLine().getStatusCode();
 		if (http_status == 401)
 		{
+			LOGGER.severe("Authentication needed");
 			throw new ConfigurationOrchestratorNotAuthenticatedException();
-		} else if (http_status == 404)
+		}
+		else if (http_status == 404)
 		{
-			throw new ConfigurationOrchestratorConfigurationNotFoundException("Unable to get started VNF (404");
-		} else if (http_status == 200)
+			LOGGER.severe("Unable to get started VNF (404)");
+			throw new ConfigurationOrchestratorConfigurationNotFoundException("Unable to get started VNF (404)");
+		}
+		else if (http_status == 200)
 		{
 			try
 			{
 				String json = HttpResponseReader.getContent(response);
 
 				return StartedVNF.getFromJson(json);
-			} catch (UnsupportedOperationException | IOException e)
+			}
+			catch (UnsupportedOperationException | IOException e)
 			{
+				LOGGER.severe("HTTP IO Error : " + e.getMessage());
 				throw new ConfigurationOrchestratorHTTPException("HTTP IO Error : " + e.getMessage());
 			}
-		} else
+		}
+		else
 		{
+			LOGGER.severe("Invalid HTTP Status : " + http_status);
 			throw new ConfigurationOrchestratorHTTPException("Invalid HTTP Status : " + http_status);
 		}
 	}
 
-	private ConfigurationSDN _getConfiguration(VnfForConfiguration vnf )
+	private ConfigurationSDN _getConfiguration(VnfForConfigurationInterface vnf )
 			throws ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorNotAuthenticatedException,
 			ConfigurationOrchestratorConfigurationNotFoundException, ConfigurationorchestratorUnsupportedFunctionalCapabilityException
 	{
@@ -187,7 +208,8 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 		String nffg_id = vnf.getNffgId();
 		String vnf_id = vnf.getId();
 		String vnf_type = vnf.getFunctionalCapability();
-			
+
+		LOGGER.info("Trying to get the configuration for "+tenant_id+"/"+nffg_id+"/"+vnf_id+"/"+vnf_type);
 		while (true)
 		{
 			RequestConfig config = RequestConfig.custom().setConnectionRequestTimeout(timeout_ms)
@@ -200,21 +222,28 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 			request.addHeader("cache-control", "no-cache");
 			request.addHeader("X-Auth-Token", auth_token);
 
+			LOGGER.fine("executing the GET");
+
 			HttpResponse response;
 			try
 			{
 				response = client.execute(request);
 			} catch (IOException e)
 			{
+				LOGGER.warning("HTTP IO Error : " + e.getMessage());
 				throw new ConfigurationOrchestratorHTTPException("HTTP IO Error : " + e.getMessage());
 			}
 
 			int http_status = response.getStatusLine().getStatusCode();
+			
+			LOGGER.fine("HTTP STATUS CODE:"+http_status);
 			if (http_status == 401)
 			{
+				LOGGER.warning("Authentication needed (401)");
 				throw new ConfigurationOrchestratorNotAuthenticatedException();
 			} else if (http_status == 404)
 			{
+				LOGGER.warning("Unable to find a configuration for "+tenant_id+"/"+nffg_id+"/"+vnf_id+"/"+vnf_type);
 				throw new ConfigurationOrchestratorConfigurationNotFoundException(
 						"Unable to find Configuration for" + tenant_id + "/" + nffg_id + "/" + vnf_id);
 			} else if (http_status == 200)
@@ -228,17 +257,29 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 					}
 					else
 					{
+						LOGGER.warning("Unable to find a Configuration class for VNF type: '"+vnf_type+"'");
 						throw new ConfigurationorchestratorUnsupportedFunctionalCapabilityException(vnf_type);
 					}
 				} catch (UnsupportedOperationException | IOException e)
 				{
+					LOGGER.warning("HTTP IO Error : " + e.getMessage());
 					throw new ConfigurationOrchestratorHTTPException("HTTP IO Error : " + e.getMessage());
 				}
 			} else if (http_status == 500)
 			{
 				// Try again
+				LOGGER.fine("HTTP STATUS 500 : trying again");
+				try
+				{
+					Thread.sleep(10000);
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+					return null;
+				}
 			} else
 			{
+				LOGGER.fine("Invalid HTTP STATUS CODE:" + http_status);
 				throw new ConfigurationOrchestratorHTTPException("Invalid HTTP Status : " + http_status);
 			}
 		}
@@ -247,6 +288,8 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 	private void _setConfiguration(ConfigurationSDN configSDN) throws JsonProcessingException,
 			ConfigurationOrchestratorNotAuthenticatedException, ConfigurationOrchestratorHTTPException
 	{
+		LOGGER.info("Trying to set the configuration for "+configSDN.getTenantId()+"/"+configSDN.getNffgId()+"/"+configSDN.getVnfId()+"/"+configSDN.getFunctionalCapability());
+
 		while (true)
 		{
 			RequestConfig config = RequestConfig.custom().setConnectionRequestTimeout(timeout_ms)
@@ -263,25 +306,48 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 			request.setEntity(new StringEntity(json, "UTF-8"));
 
 			HttpResponse response;
+			
+			LOGGER.fine("Trying to PUT the configuration");
 			try
 			{
 				response = client.execute(request);
-			} catch (IOException e)
+			}
+			catch (IOException e)
 			{
+				LOGGER.warning("HTTP IO Error : " + e.getMessage());
 				throw new ConfigurationOrchestratorHTTPException("HTTP IO Error : " + e.getMessage());
 			}
 
 			int http_status = response.getStatusLine().getStatusCode();
+			
+			LOGGER.fine("HTTP status code:"+http_status);
 			if (http_status == 401)
 			{
+				LOGGER.warning("Authentication needed (401)");
 				throw new ConfigurationOrchestratorNotAuthenticatedException();
-			} else if (http_status == 500)
+			}
+			else if (http_status == 500)
 			{
-			} else if (http_status == 200)
+				LOGGER.fine("HTTP STATUS 500 : trying again");
+				try
+				{
+					Thread.sleep(10000);
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+					return;
+				}
+			}
+			else if (http_status == 200)
 			{
+				LOGGER.fine("OK");
+
 				break;
-			} else
+			}
+			else
 			{
+				LOGGER.warning("Invalid HTTP status code : " + http_status);
+
 				throw new ConfigurationOrchestratorHTTPException("Invalid HTTP status code : " + http_status);
 			}
 		}
@@ -297,16 +363,22 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 			ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorAuthenticationException,
 			ConfigurationOrchestratorConfigurationNotFoundException, ConfigurationOrchestratorNotAuthenticatedException
 	{
+		LOGGER.info("Wait until "+vnfC.getTenantId()+"/"+vnfC.getNffgId()+"/"+vnfC.getId()+"/"+vnfC.getFunctionalCapability()+" is started");
+
 		while (true)
 		{
 			List<StartedVNF> list = getStartedVNF();
 
+			LOGGER.fine("Started VNF are "+list.size());
+
 			for (StartedVNF vnf : list)
 			{
+				LOGGER.fine(vnf.getTenantId()+"/"+vnf.getNffgId()+"/"+vnf.getId()+" is started");
 				if (vnf.getId().equals(vnfC.getId()) && 
 						vnf.getNffgId().equals(vnfC.getNffgId()) && 
 						vnf.getTenantId().equals(vnfC.getTenantId()))
 				{
+					LOGGER.fine("done");
 					return;
 				}
 			}

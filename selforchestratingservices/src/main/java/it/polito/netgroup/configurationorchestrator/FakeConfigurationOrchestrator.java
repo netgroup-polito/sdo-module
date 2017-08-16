@@ -7,7 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class FakeConfigurationOrchestrator implements ConfigurationOrchestrator
 {
 	@Override
-	public ConfigurationSDN getConfiguration(VnfForConfiguration vnf)
+	public ConfigurationSDN getConfiguration(VnfForConfigurationInterface vnf)
 			throws ConfigurationOrchestratorHTTPException, ConfigurationOrchestratorConfigurationNotFoundException,
 			ConfigurationOrchestratorAuthenticationException, ConfigurationOrchestratorNotAuthenticatedException,
 			ConfigurationorchestratorUnsupportedFunctionalCapabilityException

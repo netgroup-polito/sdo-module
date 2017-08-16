@@ -1,5 +1,7 @@
 package it.polito.netgroup.configurationorchestrator;
 
+import it.polito.netgroup.nffg.json.VNF;
+
 public interface VnfForConfigurationInterface
 {
 
@@ -10,4 +12,5 @@ public interface VnfForConfigurationInterface
 	public String getId();
 	
 	public String getFunctionalCapability();
+
 }

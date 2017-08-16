@@ -79,6 +79,7 @@ public abstract class AbstractBasicInfrastructureResource implements Infrastruct
 		return flowrules;
 	}
 
+	
 	@Override
 	public void setDefaultFlowRules(List<DeclarativeFlowRule> defaultFlowRules)
 	{
