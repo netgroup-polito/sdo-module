@@ -15,7 +15,6 @@ import it.polito.netgroup.configurationorchestrator.ConfigurationOrchestratorNot
 import it.polito.netgroup.configurationorchestrator.ConfigurationSDN;
 import it.polito.netgroup.configurationorchestrator.ConfigurationorchestratorUnsupportedFunctionalCapabilityException;
 import it.polito.netgroup.configurationorchestrator.NatConfiguration;
-import it.polito.netgroup.configurationorchestrator.VnfForConfiguration;
 import it.polito.netgroup.configurationorchestrator.VnfForConfigurationInterface;
 import it.polito.netgroup.configurationorchestrator.json.nat.ArpEntry;
 import it.polito.netgroup.configurationorchestrator.json.nat.NatSession;

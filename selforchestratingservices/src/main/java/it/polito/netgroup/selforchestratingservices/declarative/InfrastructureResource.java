@@ -19,5 +19,10 @@ public interface InfrastructureResource extends Resource
 	//public List<DeclarativeFlowRule> getDefaultFlowRules();
 	public void setDefaultFlowRules(List<DeclarativeFlowRule> defaultFlowRules);
 	public List<DeclarativeFlowRule> getFlowRules();
+	public void addFlowRules(List<DeclarativeFlowRule> flowRules);
+	public void addFlowRule(DeclarativeFlowRule flowRules);
+
 	public boolean isVNF();
+	public boolean isConfigured();
+	void setConfigured();
 }

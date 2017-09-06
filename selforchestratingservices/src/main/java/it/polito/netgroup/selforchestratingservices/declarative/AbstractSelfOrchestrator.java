@@ -76,6 +76,7 @@ public abstract class AbstractSelfOrchestrator implements SelfOrchestratorDichia
 		}
 		commit();
 	}
+	
 
 	@Override
 	public void commit()

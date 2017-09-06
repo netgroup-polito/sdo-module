@@ -13,7 +13,11 @@ public abstract class AbstractBasicInfrastructureResource implements Infrastruct
 	String type;
 	Boolean used;
 	Boolean instantiated;
-	List<DeclarativeFlowRule> flowrules;
+	Boolean isConfigured;
+	
+	List<DeclarativeFlowRule> default_flowrules;
+	List<DeclarativeFlowRule> custom_flowrules;
+
 	ConfigurationSDN configuration;
 	
 	public AbstractBasicInfrastructureResource(String _id, String _type)
@@ -22,7 +26,9 @@ public abstract class AbstractBasicInfrastructureResource implements Infrastruct
 		instantiated = false;
 		id = _id;
 		type = _type;
-		flowrules = new ArrayList<>();
+		default_flowrules = new ArrayList<>();
+		custom_flowrules = new ArrayList<>();
+		isConfigured = false;
 	}
 	
 	@Override
@@ -76,14 +82,16 @@ public abstract class AbstractBasicInfrastructureResource implements Infrastruct
 	@Override
 	public List<DeclarativeFlowRule> getFlowRules()
 	{
-		return flowrules;
+		List<DeclarativeFlowRule> ret = new ArrayList<>(default_flowrules);
+		ret.addAll(custom_flowrules);
+		return ret;
 	}
 
 	
 	@Override
 	public void setDefaultFlowRules(List<DeclarativeFlowRule> defaultFlowRules)
 	{
-		flowrules = new ArrayList<>(defaultFlowRules);
+		default_flowrules = new ArrayList<>(defaultFlowRules);
 	}
 
 	@Override
@@ -98,9 +106,36 @@ public abstract class AbstractBasicInfrastructureResource implements Infrastruct
 		return configuration;
 	}
 	
+	
+	@Override
+	public void addFlowRules(List<DeclarativeFlowRule> flowRules)
+	{
+		custom_flowrules.addAll(flowRules);
+	}
+
+
+	@Override
+	public void addFlowRule(DeclarativeFlowRule flowRules)
+	{
+		custom_flowrules.add(flowRules);
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
+	
+	@Override
+	public boolean isConfigured()
+	{
+		return isConfigured;
+	}
+	
+	@Override
+	public void setConfigured()
+	{
+		isConfigured = true;
+	}
+	
 	@Override
 	public int hashCode()
 	{

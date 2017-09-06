@@ -1,4 +1,4 @@
-package it.polito.netgroup.selforchestratingservices;
+package it.polito.netgroup.selforchestratingservices.auto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +13,13 @@ import it.polito.netgroup.selforchestratingservices.declarative.Variables;
 public class NatElementaryService implements ElementaryService
 {	
 	List<Implementation> implementations;
+	RealizedImplementation realized;
+	
 	public NatElementaryService(Variables var)
 	{
 		implementations = new ArrayList<>();
 		implementations.add(new NatImplementation1(var));
+		realized = null;
 	}
 	
 	@Override
@@ -47,7 +50,6 @@ public class NatElementaryService implements ElementaryService
 	@Override
 	public void setRelizedImplementation(RealizedImplementation realizedImplementation)
 	{
-		// TODO Auto-generated method stub
-		
+		realized = realizedImplementation;
 	}
 }

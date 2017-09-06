@@ -27,11 +27,12 @@ public class LoadBalancerInfrastructureResource extends AbstractBasicInfrastruct
 	@Override
 	public List<DeclarativeFlowRule> getFlowRules()
 	{
-		List<DeclarativeFlowRule> ret =  new ArrayList<>(flowrules);
-		
-		
+		List<DeclarativeFlowRule> ret =  new ArrayList<>(default_flowrules);
+		ret.addAll(custom_flowrules);
 		
 		return ret;
 	}
+
+
 	
 }

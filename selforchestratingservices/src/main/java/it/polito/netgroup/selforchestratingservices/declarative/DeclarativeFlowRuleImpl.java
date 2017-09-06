@@ -2,16 +2,28 @@ package it.polito.netgroup.selforchestratingservices.declarative;
 
 public class DeclarativeFlowRuleImpl implements DeclarativeFlowRule
 {
-	String port1;
-	String port2;
 	String id;
+	String matchPortIn;
+	String matchDstMac;
+	String matchSrcMac;
+	String outputPort;
+	Integer priority;
+	Boolean toremove=false;
+	Boolean isnew=false;
+	Boolean bidirectional=false;
+	
+	
 	@Override
-	public void linkPorts(String id, String port1, String port2)
+	public void linkPorts(String _id, String port1, String port2)
 	{
-		this.id = id;
-		this.port1 = port1;
-		this.port2 = port2;
+		isnew=true;
+		bidirectional=true;
+		id = _id;
+		matchPortIn = port1;
+		outputPort = port2;
+		priority = 1;
 	}
+	
 
 	@Override
 	public String getId()
@@ -20,15 +32,110 @@ public class DeclarativeFlowRuleImpl implements DeclarativeFlowRule
 	}
 
 	@Override
-	public String getPort1()
+	public void setId(String _id)
 	{
-		return port1;
+		id= _id;
 	}
 
 	@Override
-	public String getPort2()
+	public void setMatchSourceMac(String value)
 	{
-		return port2;
+		matchSrcMac = value;
+	}
+
+	@Override
+	public void setPriority(int i)
+	{
+		priority = i;
+	}
+
+	@Override
+	public void setMatchDestMac(String value)
+	{
+		matchDstMac = value;
+	}
+
+	@Override
+	public void setActionOutputToPort(String string)
+	{
+		outputPort = string;
+	}
+
+	@Override
+	public void setMatchPortIn(String port)
+	{
+		matchPortIn = port;
+	}
+
+	@Override
+	public String getMatchSourceMac()
+	{
+		return matchSrcMac;
+	}
+
+	@Override
+	public Integer getPriority()
+	{
+		return priority;
+	}
+
+	@Override
+	public String getMatchDestMac()
+	{
+		return matchDstMac;
+	}
+
+	@Override
+	public String getActionOutputToPort()
+	{
+		return outputPort;
+	}
+
+	@Override
+	public String getMatchPortIn()
+	{
+		return matchPortIn;
+	}
+
+
+	@Override
+	public void setToRemove()
+	{
+		toremove = true;
+	}
+
+
+	@Override
+	public boolean toRemove()
+	{
+		return toremove;
+	}
+
+
+	@Override
+	public void setNew()
+	{
+		isnew = true;
+	}
+
+
+	@Override
+	public void unsetNew()
+	{
+		isnew = false;
+	}
+
+
+	@Override
+	public boolean isNew()
+	{
+		return isnew;
+	}
+	
+	@Override
+	public boolean isBidirectional()
+	{
+		return bidirectional;
 	}
 
 }

@@ -23,6 +23,7 @@ import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorU
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorAuthenticationException;
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorHTTPException;
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorNotAuthenticatedException;
+import it.polito.netgroup.selforchestratingservices.auto.SelfOrchestratorDichiarativoNAT;
 import it.polito.netgroup.selforchestratingservices.declarative.Infrastructure;
 import it.polito.netgroup.selforchestratingservices.declarative.InfrastructureImplementation;
 import it.polito.netgroup.selforchestratingservices.declarative.SelfOrchestratorDichiarativo;

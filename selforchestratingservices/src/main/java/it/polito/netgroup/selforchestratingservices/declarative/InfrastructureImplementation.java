@@ -195,54 +195,68 @@ public class InfrastructureImplementation implements Infrastructure
         
         for(InfrastructureResource resource : resources)
         {
-        		if (resource.isUsed())
-        		{
-        			if ( resource.isVNF() )
-        			{
-	        			VNFExtended vnf = buildVNF(resource);
-	        			
-	        			try
+    		if (resource.isUsed())
+    		{
+    			if ( resource.isVNF() && !resource.isInstantiated())
+    			{
+        			VNFExtended vnf = buildVNF(resource);
+        			
+        			try
 					{
 						nffg.addVNF(vnf);
-					} catch (DuplicateVNFException e)
+						resource.setInstantiated();
+					}
+        			catch (DuplicateVNFException e)
 					{
 						e.printStackTrace();
 					}
-	        		}
-        			
-        			for(DeclarativeFlowRule dfr : resource.getFlowRules())
-        			{
-        				try
+		    	}
+		    			
+				for(DeclarativeFlowRule dfr : resource.getFlowRules())
+				{
+					if ( dfr.isNew() )
 					{
-						for ( FlowRule flowRule : buildFlowRules(nffg,resource,dfr) )
+						try
 						{
-							try
+							for(FlowRule flowRule : buildFlowRules(nffg,resource,dfr))
 							{
-								nffg.addFlowRule(flowRule);
-							}
-							catch (DuplicateFlowRuleException e)
-							{
-								e.printStackTrace();
+								try
+								{
+									nffg.addFlowRule(flowRule);
+									dfr.unsetNew();
+								}
+								catch (DuplicateFlowRuleException e)
+								{
+									e.printStackTrace();
+								}	
 							}
 						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}
 					}
-    					catch (Exception e)
+					if ( dfr.toRemove() )
 					{
-						e.printStackTrace();
+						nffg.removeFlowRulesStartingWith(dfr.getId());
 					}
-        			}
-        			
-				if ( resource.getConfiguration() != null )
+		    	}
+        		
+				if ( ! resource.isConfigured() )
 				{
-					configurationQueue.add(resource);
+					if ( resource.getConfiguration() != null )
+					{
+						configurationQueue.add(resource);
+					}
 				}
-        		}
+	        }
         }
 
         try
 		{
 			orchestrator.addNFFG(nffg);
-		} catch (JsonProcessingException | InfrastructureOrchestratorHTTPException
+		}
+        catch (JsonProcessingException | InfrastructureOrchestratorHTTPException
 				| InfrastructureOrchestratorAuthenticationException
 				| InfrastructureOrchestratorNotAuthenticatedException e)
 		{
@@ -251,31 +265,34 @@ public class InfrastructureImplementation implements Infrastructure
      
         for (InfrastructureResource resource : configurationQueue)
         {
+        
             ConfigurationSDN config = resource.getConfiguration();
             config.setTenantId(tenant_id);
             config.setNffgid(nffg_name);
             config.setVnfId(resource.getId());
 
             //logging.debug("Updating configuration of %s/%s/%s" % (config.tenant_id, config.nffg_id, config.vnf_id))
-            	try
+            try
 			{
 				configurationService.waitUntilStarted(config);
 				configurationService.setConfiguration(config);
 
-			} catch (InterruptedException | ConfigurationOrchestratorHTTPException
+			}
+            catch (InterruptedException | ConfigurationOrchestratorHTTPException
 					| ConfigurationOrchestratorAuthenticationException
 					| ConfigurationOrchestratorConfigurationNotFoundException
 					| ConfigurationOrchestratorNotAuthenticatedException e)
 			{
 				e.printStackTrace();
-			} catch (JsonProcessingException e)
+			}
+            catch (JsonProcessingException e)
 			{
 				e.printStackTrace();
 			}
             
             raiseEvent("on_"+resource.getType()+"_added","INFRASTRUCTURE",this,resource,resource);
 
-            if  ( monitors.get(resource.getType()) == null )
+            if ( monitors.get(resource.getType()) == null )
             	{
             		Monitor monitor = Monitor.getMonitor(resource.getType(), this);
             		monitor.setTenantId(tenant_id);
@@ -287,6 +304,7 @@ public class InfrastructureImplementation implements Infrastructure
             		}
             	}
             monitors.get(resource.getType()).addResource(resource);
+            resource.isConfigured();
         }
 	}
 	
@@ -302,78 +320,82 @@ public class InfrastructureImplementation implements Infrastructure
 		}
 	}
 	
-	
 	private List<FlowRule> buildFlowRules(NF_FGExtended nffg, InfrastructureResource resource, DeclarativeFlowRule dfr) throws Exception
 	{
-		String flowid = resource.getId() + dfr.getId();
-		String port_from = dfr.getPort1();
-		String port_to = dfr.getPort2();
-
-		String[] arr = port_from.split(":");
-		String port_from_vnf = null;
-		String port_from_label = null;
-		String port_from_number = null;
+		String port_from = dfr.getMatchPortIn();
 		PortUniqueID vnf_port_from = null;
-		if (arr.length== 1)
+
+		if ( port_from != null )
 		{
-			if ( ! resource.isVNF() ) throw new Exception("Invalid flow rule for non-VNF resource");
-			port_from_vnf = resource.getId();
-			port_from_label = port_from;
-			VNFExtended vnf = nffg.getVNF(port_from_vnf);
-			vnf_port_from = vnf.getFirstFreeFullnamePortByLabel(nffg, port_from_label);
-		}
-		else if (arr.length == 2 )
-		{
-			port_from_vnf = arr[0];
-			port_from_label = arr[1];
-			VNFExtended vnf = nffg.getVNF(port_from_vnf);
-			vnf_port_from = vnf.getFirstFreeFullnamePortByLabel(nffg, port_from_label);		
-		}
-		else if (arr.length == 3)
-		{
-			port_from_vnf = arr[0];
-			port_from_label = arr[1];
-			port_from_number = arr[3];
-			vnf_port_from = new PortUniqueID("vnf:"+port_from_vnf + ":" + port_from_label + ":" + port_from_number);
-		}
-		else
-		{
-			throw new Exception("Invalid Resource FlowRule From Port "+ port_from);
+			String[] arr = port_from.split(":");
+			String port_from_vnf = null;
+			String port_from_label = null;
+			String port_from_number = null;
+			if (arr.length== 1)
+			{
+				if ( ! resource.isVNF() ) throw new Exception("Invalid flow rule for non-VNF resource");
+				port_from_vnf = resource.getId();
+				port_from_label = port_from;
+				VNFExtended vnf = nffg.getVNF(port_from_vnf);
+				vnf_port_from = vnf.getFirstFreeFullnamePortByLabel(nffg, port_from_label);
+			}
+			else if (arr.length == 2 )
+			{
+				port_from_vnf = arr[0];
+				port_from_label = arr[1];
+				VNFExtended vnf = nffg.getVNF(port_from_vnf);
+				vnf_port_from = vnf.getFirstFreeFullnamePortByLabel(nffg, port_from_label);		
+			}
+			else if (arr.length == 3)
+			{
+				port_from_vnf = arr[0];
+				port_from_label = arr[1];
+				port_from_number = arr[3];
+				vnf_port_from = new PortUniqueID("vnf:"+port_from_vnf + ":" + port_from_label + ":" + port_from_number);
+			}
+			else
+			{
+				throw new Exception("Invalid Resource FlowRule From Port "+ port_from);
+			}
 		}
 		
-		String[] arr2 = port_to.split(":");
-		String port_to_vnf =  null;
-		String port_to_label = null;
-		String port_to_number = null;
+		String port_to = dfr.getActionOutputToPort();
 		PortUniqueID vnf_port_to = null;
-		if (arr2.length== 1)
-		{
-			if ( ! resource.isVNF() ) throw new Exception("Invalid flow rule for non-VNF resource");
 
-			port_to_vnf = resource.getId();
-			port_to_label = port_to;
-			VNFExtended vnf = nffg.getVNF(port_to_vnf);
-			vnf_port_to = vnf.getFirstFreeFullnamePortByLabel(nffg, port_to_label);
-		}
-		else if (arr2.length == 2 )
+		if (port_to != null)
 		{
-			port_to_vnf = arr2[0];
-			port_to_label = arr2[1];
-			VNFExtended vnf = nffg.getVNF(port_to_vnf);
-			vnf_port_to = vnf.getFirstFreeFullnamePortByLabel(nffg, port_to_label);
-		}
-		else if (arr2.length == 3)
-		{
-			port_to_vnf = arr2[0];
-			port_to_label = arr2[1];
-			port_to_number = arr2[3];
-			vnf_port_to = new PortUniqueID("vnf:"+port_to_vnf + ":" + port_to_label + ":" + port_to_number);
-		}
-		else
-		{
-			throw new Exception("Invalid Resource FlowRule From Port "+ port_from);
-		}
-			       
+			String[] arr2 = port_to.split(":");
+			String port_to_vnf =  null;
+			String port_to_label = null;
+			String port_to_number = null;
+			if (arr2.length== 1)
+			{
+				if ( ! resource.isVNF() ) throw new Exception("Invalid flow rule for non-VNF resource");
+	
+				port_to_vnf = resource.getId();
+				port_to_label = port_to;
+				VNFExtended vnf = nffg.getVNF(port_to_vnf);
+				vnf_port_to = vnf.getFirstFreeFullnamePortByLabel(nffg, port_to_label);
+			}
+			else if (arr2.length == 2 )
+			{
+				port_to_vnf = arr2[0];
+				port_to_label = arr2[1];
+				VNFExtended vnf = nffg.getVNF(port_to_vnf);
+				vnf_port_to = vnf.getFirstFreeFullnamePortByLabel(nffg, port_to_label);
+			}
+			else if (arr2.length == 3)
+			{
+				port_to_vnf = arr2[0];
+				port_to_label = arr2[1];
+				port_to_number = arr2[3];
+				vnf_port_to = new PortUniqueID("vnf:"+port_to_vnf + ":" + port_to_label + ":" + port_to_number);
+			}
+			else
+			{
+				throw new Exception("Invalid Resource FlowRule From Port "+ port_from);
+			}
+		}       
 
 		if ( !nffg.existPort(vnf_port_from) )
 		{
@@ -385,33 +407,75 @@ public class InfrastructureImplementation implements Infrastructure
 		}
 
 		Action actionFr1 = new Action();
-		actionFr1.setOutputToPort(vnf_port_to.getValue());
+		
+		if ( vnf_port_to != null)
+		{
+			actionFr1.setOutputToPort(vnf_port_to.getValue());
+		}
 		List<Action> actionsFr1 = new ArrayList<Action>();
 		actionsFr1.add(actionFr1);
 		Match matchFr1 = new Match();
-		matchFr1.setPortIn(vnf_port_from.getValue());
+		
+		if ( vnf_port_from != null )
+		{
+			matchFr1.setPortIn(vnf_port_from.getValue());
+		}
+		
 		FlowRule fr1 = new FlowRule();
-		fr1.setId(flowid+"_1");
+		fr1.setId(dfr.getId());
 		fr1.setMatch(matchFr1);
-		fr1.setPriority(1);
+		
+		if ( dfr.getPriority() != null )
+		{
+			fr1.setPriority(dfr.getPriority());
+		}
+		else
+		{
+			fr1.setPriority(1);
+		}
+		
 		fr1.setActions(actionsFr1);
 		
-		Action actionFr2 = new Action();
-		actionFr2.setOutputToPort(vnf_port_from.getValue());
-		List<Action> actionsFr2 = new ArrayList<Action>();
-		actionsFr2.add(actionFr2);
-		Match matchFr2 = new Match();
-		matchFr2.setPortIn(vnf_port_to.getValue());
-		FlowRule fr2 = new FlowRule();
-		fr2.setId(flowid+"_2");
-		fr2.setMatch(matchFr2);
-		fr2.setPriority(1);
-		fr2.setActions(actionsFr2);
 		
-		List<FlowRule> ret = new ArrayList<FlowRule>();
+		List<FlowRule> ret = new ArrayList<>();
 		ret.add(fr1);
-		ret.add(fr2);
 		
+		if ( dfr.isBidirectional() )
+		{
+			Action actionFr2 = new Action();
+			
+			if ( vnf_port_from != null)
+			{
+				actionFr2.setOutputToPort(vnf_port_from.getValue());
+			}
+			List<Action> actionsFr2 = new ArrayList<Action>();
+			actionsFr2.add(actionFr2);
+			Match matchFr2 = new Match();
+			
+			if ( vnf_port_to != null )
+			{
+				matchFr2.setPortIn(vnf_port_to.getValue());
+			}
+			
+			FlowRule fr2 = new FlowRule();
+			fr2.setId(dfr.getId()+"_2");
+			fr2.setMatch(matchFr2);
+			
+			if ( dfr.getPriority() != null )
+			{
+				fr2.setPriority(dfr.getPriority());
+			}
+			else
+			{
+				fr2.setPriority(2);
+			}
+			
+			fr2.setActions(actionsFr2);
+			
+			
+			ret.add(fr2);
+			
+		}
 		return ret;
 	}
 	
@@ -421,7 +485,8 @@ public class InfrastructureImplementation implements Infrastructure
 		try
 		{
 			template = datastore.getTemplate(resource.getType());
-		} catch (DatastoreClientHTTPException | DatastoreClientNotAuthenticatedException
+		}
+		catch (DatastoreClientHTTPException | DatastoreClientNotAuthenticatedException
 				| DatastoreClientTemplateNotFoundException | DatastoreClientAuthenticationException e1)
 		{
 			e1.printStackTrace();
@@ -431,7 +496,8 @@ public class InfrastructureImplementation implements Infrastructure
 		try
 		{
 			return template.buildVNF(resource.getId(), resource.getId());
-		} catch (NotImplementedYetException e)
+		}
+		catch (NotImplementedYetException e)
 		{
 			e.printStackTrace();
 		}

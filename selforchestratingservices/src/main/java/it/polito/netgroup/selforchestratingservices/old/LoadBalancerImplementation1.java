@@ -1,4 +1,4 @@
-package it.polito.netgroup.selforchestratingservices;
+package it.polito.netgroup.selforchestratingservices.old;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import it.polito.netgroup.selforchestratingservices.declarative.Implementation;
 import it.polito.netgroup.selforchestratingservices.declarative.InfrastructureResource;
 import it.polito.netgroup.selforchestratingservices.declarative.RealizedImplementation;
 import it.polito.netgroup.selforchestratingservices.declarative.RealizedImplementationImpl;
-import it.polito.netgroup.selforchestratingservices.declarative.Resource;
 import it.polito.netgroup.selforchestratingservices.declarative.ResourceRequirement;
 import it.polito.netgroup.selforchestratingservices.declarative.Variables;
 
@@ -43,12 +42,14 @@ public class LoadBalancerImplementation1 implements Implementation
 		return null;
 	}
 	
+	/*
 	@Override
 	public List<Resource> getResources()
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	*/
 	
 	@Override
 	public List<ResourceRequirement> getResourceRequirement()

@@ -3,12 +3,10 @@ package it.polito.netgroup.loadbalancer;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.polito.netgroup.configurationorchestrator.VnfForConfiguration;
 import it.polito.netgroup.nffg.json.Action;
 import it.polito.netgroup.nffg.json.DuplicateFlowRuleException;
 import it.polito.netgroup.nffg.json.FlowRule;
 import it.polito.netgroup.nffg.json.FlowRuleNotFoundException;
-import it.polito.netgroup.nffg.json.Host;
 import it.polito.netgroup.nffg.json.MacAddress;
 import it.polito.netgroup.nffg.json.Match;
 import it.polito.netgroup.nffg.json.NF_FGExtended;
@@ -189,28 +187,6 @@ public class LoadBalancer
 		}
 		
 		throw new LoadBalancerHostNotFoundException();
-	}
-	/*
-	 * def get_mac_host_to_vnf(self,nffg,vnf_id):
-    
-	 */
-
-	public void addNat(VnfForConfiguration args)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void removeNat(VnfForConfiguration args)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addHost(Host host)
-	{
-		// TODO Auto-generated method stub
-		
 	}
 }
 

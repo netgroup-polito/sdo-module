@@ -1,10 +1,12 @@
-package it.polito.netgroup.selforchestratingservices;
+package it.polito.netgroup.selforchestratingservices.old;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import it.polito.netgroup.configurationorchestrator.VnfForConfiguration;
 import it.polito.netgroup.nffg.json.Host;
+import it.polito.netgroup.nffg.json.MacAddress;
+import it.polito.netgroup.nffg.json.PortUniqueID;
 import it.polito.netgroup.selforchestratingservices.declarative.ElementaryService;
 import it.polito.netgroup.selforchestratingservices.declarative.Implementation;
 import it.polito.netgroup.selforchestratingservices.declarative.RealizedImplementation;
@@ -13,11 +15,13 @@ import it.polito.netgroup.selforchestratingservices.declarative.Variables;
 public class LoadBalancerElementaryService implements ElementaryService
 {
 	List<Implementation> implementations;
+	RealizedImplementation ri;
 	
-	public LoadBalancerElementaryService(Variables var)
+	public LoadBalancerElementaryService(MacAddress virtual_mac,PortUniqueID port_in,Variables var)
 	{
 		implementations = new ArrayList<>();
 		implementations.add(new LoadBalancerImplementation1(var));
+		
 	}
 	
 	@Override
@@ -42,7 +46,6 @@ public class LoadBalancerElementaryService implements ElementaryService
 	@Override
 	public void commit()
 	{
-		//TODO
 	}
 
 	@Override
@@ -54,25 +57,17 @@ public class LoadBalancerElementaryService implements ElementaryService
 
 	public void removeHost(Host host)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void addHost(Host host)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void removeNat(VnfForConfiguration args)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void addNat(VnfForConfiguration args)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -1,4 +1,4 @@
-package it.polito.netgroup.selforchestratingservices;
+package it.polito.netgroup.selforchestratingservices.auto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,8 @@ public class NatResourceRequirement implements ResourceRequirement
         DeclarativeFlowRule dfr1 = new DeclarativeFlowRuleImpl();
         dfr1.linkPorts("linkWAN","WAN","SWITCH_WAN:port");
         DeclarativeFlowRule dfr2 = new DeclarativeFlowRuleImpl();
-        dfr2.linkPorts("linkMAN","management","SWITCH_MAN:port");		        
+        dfr2.linkPorts("linkMAN","management","SWITCH_MAN:port");
+        
         default_flowrules.add(dfr1);
         default_flowrules.add(dfr2);
         

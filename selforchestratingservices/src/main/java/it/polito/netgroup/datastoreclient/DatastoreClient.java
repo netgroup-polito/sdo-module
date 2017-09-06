@@ -1,7 +1,6 @@
 package it.polito.netgroup.datastoreclient;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -24,7 +23,7 @@ public class DatastoreClient
 	private String auth_token;
 	private int timeout_ms;
 	
-	private static final Logger LOGGER = Logger.getGlobal();
+	//private static final Logger LOGGER = Logger.getGlobal();
 
 	public DatastoreClient(String _username, String _password, String _base_url, int _timeout_ms)
 	{

@@ -312,13 +312,31 @@ public class NF_FGExtended extends NF_FG
 
 	public void removeVNF(VnfForConfiguration nat)
 	{
-		// TODO Auto-generated method stub
-		
+		removeVNF(nat.getId());
 	}
 
 	public void removeVNF(String id)
 	{
-		// TODO Auto-generated method stub
+		for (VNF vnf : getForwardingGraph().getVNFs() )
+		{
+			if (vnf.getId().equals(id))
+			{
+				getForwardingGraph().getVNFs().remove(vnf);
+				return;
+			}
+		}		
+	}
+
+	public void removeFlowRulesStartingWith(String prefix)
+	{
+		List<FlowRule> cpy = new ArrayList<>(getFlowRules());
 		
+		for (FlowRule flowRule : cpy )
+		{
+			if (flowRule.getId().startsWith(prefix))
+			{
+				getForwardingGraph().getBigSwitch().getFlowRules().remove(flowRule);
+			}
+		}		
 	}
 }

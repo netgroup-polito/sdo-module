@@ -7,7 +7,6 @@ public class NatInfrastructureResource extends AbstractBasicInfrastructureResour
 	public NatInfrastructureResource(String _id)
 	{
 		super(_id, "NAT");
-		// TODO Auto-generated constructor stub
 	}
 
 	
@@ -22,5 +21,4 @@ public class NatInfrastructureResource extends AbstractBasicInfrastructureResour
 	{
 		return true;
 	}
-
 }

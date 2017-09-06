@@ -6,7 +6,7 @@ public interface Implementation
 {
 	public String getName();
 	public void setResoucesUsed(List<InfrastructureResource> r);
-	public List<Resource> getResources();
+	//public List<Resource> getResources();
 	public List<InfrastructureResource> getResourcesUsed();
 	public Float getQoS();
 	public Float getQoS(List<InfrastructureResource> r);
