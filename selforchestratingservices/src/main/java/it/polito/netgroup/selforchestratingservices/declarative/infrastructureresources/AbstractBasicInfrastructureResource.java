@@ -4,31 +4,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polito.netgroup.configurationorchestrator.ConfigurationSDN;
+import it.polito.netgroup.nffg.json.FlowRule;
 import it.polito.netgroup.selforchestratingservices.declarative.DeclarativeFlowRule;
-import it.polito.netgroup.selforchestratingservices.declarative.InfrastructureResource;
+import it.polito.netgroup.selforchestratingservices.declarative.ElementaryService;
+import it.polito.netgroup.selforchestratingservices.declarative.Infrastructure;
+import it.polito.netgroup.selforchestratingservices.declarative.ResourceTemplate;
+import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource;
 
 public abstract class AbstractBasicInfrastructureResource implements InfrastructureResource
 {
+	//TODO rivedere la questione delle flowrules !!!!!!!!!!!!!!!!!!!!!!
+
+
 	String id;
-	String type;
 	Boolean used;
 	Boolean instantiated;
-	Boolean isConfigured;
+	ResourceTemplate template;
+	Infrastructure infrastructure;
 	
 	List<DeclarativeFlowRule> default_flowrules;
 	List<DeclarativeFlowRule> custom_flowrules;
+	ElementaryService usedBy;
 
 	ConfigurationSDN configuration;
 	
-	public AbstractBasicInfrastructureResource(String _id, String _type)
+	public AbstractBasicInfrastructureResource(Infrastructure _infrastructure, String _id)
 	{
+		infrastructure = _infrastructure;
 		used = false;
 		instantiated = false;
 		id = _id;
-		type = _type;
 		default_flowrules = new ArrayList<>();
 		custom_flowrules = new ArrayList<>();
-		isConfigured = false;
+		template = null;
 	}
 	
 	@Override
@@ -36,33 +44,36 @@ public abstract class AbstractBasicInfrastructureResource implements Infrastruct
 	{
 		return id;
 	}
-	
-	@Override
-	public String getType()
-	{
-		return type;
-	}
+
 
 	@Override
-	public boolean isUsed()
+	public Boolean isUsed()
 	{
 		return used;
 	}
 
 	@Override
-	public void setUsed()
+	public void setUsed(ElementaryService elementaryService)
 	{
 		used = true;
+		usedBy = elementaryService;
+	}
+
+	@Override
+	public ElementaryService getUsedBy()
+	{
+		return usedBy;
 	}
 
 	@Override
 	public void unsetUsed()
 	{
 		used = false;
+		usedBy = null;
 	}
 
 	@Override
-	public boolean isInstantiated()
+	public Boolean isInstantiated()
 	{
 		return instantiated;
 	}
@@ -87,13 +98,6 @@ public abstract class AbstractBasicInfrastructureResource implements Infrastruct
 		return ret;
 	}
 
-	
-	@Override
-	public void setDefaultFlowRules(List<DeclarativeFlowRule> defaultFlowRules)
-	{
-		default_flowrules = new ArrayList<>(defaultFlowRules);
-	}
-
 	@Override
 	public void setConfiguration(ConfigurationSDN configuration)
 	{
@@ -105,37 +109,27 @@ public abstract class AbstractBasicInfrastructureResource implements Infrastruct
 	{
 		return configuration;
 	}
-	
-	
-	@Override
-	public void addFlowRules(List<DeclarativeFlowRule> flowRules)
-	{
-		custom_flowrules.addAll(flowRules);
-	}
 
 
-	@Override
-	public void addFlowRule(DeclarativeFlowRule flowRules)
-	{
-		custom_flowrules.add(flowRules);
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	
 	@Override
-	public boolean isConfigured()
+	public void applyTemplate(ResourceTemplate _template)
 	{
-		return isConfigured;
+		template = _template;
+		default_flowrules = template.getDefaultFlowRules();
+		configuration = template.getDefaultConfiguration();
 	}
-	
+
 	@Override
-	public void setConfigured()
+	public ResourceTemplate getTemplate()
 	{
-		isConfigured = true;
+		return template;
 	}
-	
+
+
 	@Override
 	public int hashCode()
 	{
@@ -165,5 +159,10 @@ public abstract class AbstractBasicInfrastructureResource implements Infrastruct
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Infrastructure getInfrastructure() {
+		return infrastructure;
 	}
 }

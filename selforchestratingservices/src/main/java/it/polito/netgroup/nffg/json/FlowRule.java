@@ -1,6 +1,7 @@
 
 package it.polito.netgroup.nffg.json;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,31 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 { "id", "description", "priority", "match", "actions" })
 public class FlowRule
 {
+	public FlowRule()
+	{
+		this.id=null;
+		this.description=null;
+		this.priority=null;
+		this.match = null;
+		this.actions=null;
+	}
+
+	public FlowRule(String id, String description, Integer priority, Match match, Action action) {
+		this.id = id;
+		this.description = description;
+		this.priority = priority;
+		this.match = match;
+		this.actions = new ArrayList<Action>();
+		actions.add(action);
+	}
+
+	public FlowRule(String id, String description, Integer priority, Match match, List<Action> actions) {
+		this.id = id;
+		this.description = description;
+		this.priority = priority;
+		this.match = match;
+		this.actions = actions;
+	}
 
 	/**
 	 * 

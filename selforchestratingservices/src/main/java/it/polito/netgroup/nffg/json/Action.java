@@ -44,6 +44,15 @@ public class Action
 	@JsonProperty("output_to_controller")
 	private Boolean outputToController;
 
+	public Action()
+	{
+
+	}
+
+	public Action(String outputToPort) {
+		this.outputToPort = outputToPort;
+	}
+
 	@JsonProperty("output_to_port")
 	public String getOutputToPort()
 	{

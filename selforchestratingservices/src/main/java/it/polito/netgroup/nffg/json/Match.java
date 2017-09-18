@@ -43,6 +43,18 @@ public class Match
 	@JsonProperty("port_in")
 	private String portIn;
 
+
+	public Match()
+	{
+
+	}
+
+	public Match(String portIn, String sourceMac, String destMac) {
+		this.sourceMac = sourceMac;
+		this.destMac = destMac;
+		this.portIn = portIn;
+	}
+
 	@JsonProperty("hard_timeout")
 	public String getHardTimeout()
 	{

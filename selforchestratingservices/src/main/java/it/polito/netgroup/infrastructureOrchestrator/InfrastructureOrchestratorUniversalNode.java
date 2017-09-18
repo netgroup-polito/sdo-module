@@ -17,7 +17,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import it.polito.netgroup.natmonitor.HttpResponseReader;
 import it.polito.netgroup.nffg.json.NF_FGExtended;
 
 public class InfrastructureOrchestratorUniversalNode implements InfrastructureOrchestrator

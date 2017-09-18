@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import it.polito.netgroup.infrastructureOrchestrator.HttpResponseReader;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -15,8 +17,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
-import it.polito.netgroup.natmonitor.HttpResponseReader;
 
 public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 {

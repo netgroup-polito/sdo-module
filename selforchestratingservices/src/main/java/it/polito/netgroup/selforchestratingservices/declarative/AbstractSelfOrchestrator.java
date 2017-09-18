@@ -1,29 +1,29 @@
 package it.polito.netgroup.selforchestratingservices.declarative;
 
+import it.polito.netgroup.selforchestratingservices.declarative_new.AbstractInfrastructureEventHandler;
+import it.polito.netgroup.selforchestratingservices.declarative_new.Framework;
+import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureEventHandler;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AbstractSelfOrchestrator implements SelfOrchestratorDichiarativo
+public abstract class AbstractSelfOrchestrator implements SelfOrchestrator
 {
-	private String name;
-	private HashMap<String,ElementaryService> elementaryServices;
-	private Infrastructure infrastructure;
+	protected String name;
+	protected HashMap<String,ElementaryService> elementaryServices;
+	protected Variables variables ;
+	protected InfrastructureEventHandler infrastructureEventHandler;
+	protected String initNFFGFilename;
 
-	protected void init(String name, HashMap<String, ElementaryService> elementaryServices2,
-			Infrastructure infrastructure)
+	public AbstractSelfOrchestrator(Framework _framework, String _initNFFGFilename)
 	{
-		this.name = name;
-		this.elementaryServices = elementaryServices2;
-		this.infrastructure = infrastructure;
+		elementaryServices = new HashMap<>();
+		variables = new VariablesImplementation();
+		initNFFGFilename = _initNFFGFilename;
 	}
-	
-	@Override
-	public Infrastructure getInfrastructure()
-	{
-		return infrastructure;
-	}
-	
+
 	@Override
 	public String getName()
 	{
@@ -35,52 +35,19 @@ public abstract class AbstractSelfOrchestrator implements SelfOrchestratorDichia
 	{
 		return new ArrayList<>(elementaryServices.values());
 	}
-	
-	@Override
-	public void newServiceState()
-	{
-		infrastructure.freeAllResources();
-		for (ElementaryService elementaryService : elementaryServices.values())
-		{
-			RealizedImplementation realizedImplementation = null;
-			for (Implementation implementation : elementaryService.getImplementations())
-			{
-				for (ResourceRequirement resourceRequirement : implementation.getResourceRequirement())
-				{
-					List<InfrastructureResource> resources_used = new ArrayList<>();
-					for (InfrastructureResource infrastructureResource : infrastructure.getResourcesFreeOfType(resourceRequirement.getType()))
-					{
-						//infrastructureResource.setUsed();
-						infrastructureResource.setConfiguration(resourceRequirement.getDefaultConfiguration());
-						infrastructureResource.setDefaultFlowRules(resourceRequirement.getDefaultFlowRules());
-						resources_used.add(infrastructureResource);
-						
-						if (realizedImplementation == null || realizedImplementation.qos() < implementation.getQoS(resources_used))
-						{
-							if (realizedImplementation != null )
-							{
-								infrastructure.freeResources(resources_used);
-							}
-							realizedImplementation = implementation.getRealizedImplementation(resources_used);
-							infrastructure.setResourcesUsed(resources_used);
-						}
-					}			
-				}
-			}
-			if (realizedImplementation == null)
-			{
-				System.out.println("ERRORE");
-				System.exit(1);
-			}
-			elementaryService.setRelizedImplementation(realizedImplementation);
-		}
-		commit();
-	}
-	
 
 	@Override
-	public void commit()
+	public InfrastructureEventHandler getInfrastructureEventhandler() {
+		return infrastructureEventHandler;
+	}
+
+	public Variables getVariables() {
+		return variables;
+	}
+
+	@Override
+	public String getInitNFFGFilename()
 	{
-		infrastructure.commit();
+		return initNFFGFilename;
 	}
 }

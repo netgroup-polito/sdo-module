@@ -104,33 +104,12 @@ public class DeclarativeFlowRuleImpl implements DeclarativeFlowRule
 		toremove = true;
 	}
 
-
 	@Override
 	public boolean toRemove()
 	{
 		return toremove;
 	}
 
-
-	@Override
-	public void setNew()
-	{
-		isnew = true;
-	}
-
-
-	@Override
-	public void unsetNew()
-	{
-		isnew = false;
-	}
-
-
-	@Override
-	public boolean isNew()
-	{
-		return isnew;
-	}
 	
 	@Override
 	public boolean isBidirectional()

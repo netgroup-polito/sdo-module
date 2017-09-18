@@ -160,6 +160,8 @@ public class NF_FGExtended extends NF_FG
 	@JsonIgnore
 	public boolean existPort(PortUniqueID port1)
 	{
+		if (port1 == null) return false;
+
 		try
 		{
 			if (port1.getType().equals("vnf"))
@@ -205,7 +207,22 @@ public class NF_FGExtended extends NF_FG
 	@JsonIgnore
 	public void removeVNF(VNF vnf)
 	{
+		removeFlowRuleOfVNF(vnf);
 		getForwardingGraph().getVNFs().remove(vnf);
+	}
+
+	private void removeFlowRuleOfVNF(VNF vnf) {
+		for(Port port : vnf.getPorts())
+		{
+			for (FlowRule flowrule:getFlowRulesSendingTrafficToPort(new PortUniqueID(vnf,port)))
+			{
+				removeFlowRule(flowrule.getId());
+			}
+			for(FlowRule flowrule: getFlowRulesSendingTrafficFromPort(new PortUniqueID(vnf,port)))
+			{
+				removeFlowRule(flowrule.getId());
+			}
+		}
 	}
 
 	@JsonIgnore

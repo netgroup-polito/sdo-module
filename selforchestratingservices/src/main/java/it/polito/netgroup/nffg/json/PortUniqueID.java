@@ -10,6 +10,11 @@ public class PortUniqueID
 		port_nffg_unique_id = string;
 	}
 
+	public PortUniqueID(VNF vnf, Port port)
+	{
+		port_nffg_unique_id = "vnf:"+vnf.getId()+":"+port.getName()+":"+port.getId();
+	}
+
 	public String getValue()
 	{
 		return port_nffg_unique_id;

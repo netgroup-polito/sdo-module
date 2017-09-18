@@ -32,10 +32,6 @@ public interface DeclarativeFlowRule
 	void setToRemove();
 	boolean toRemove();
 
-	void setNew();
-	void unsetNew();
-	
-	boolean isNew();
 	boolean isBidirectional();
 	
 }

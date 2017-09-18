@@ -1,9 +1,12 @@
 package it.polito.netgroup.selforchestratingservices.declarative;
 
+import java.util.List;
+
+import it.polito.netgroup.configurationorchestrator.ConfigurationSDN;
 
 public interface Resource
 {
-	public String getType();
-	public String getId();
-	public boolean isUsed();
+	String getId();
+	Boolean isUsed();
+	ElementaryService getUsedBy();
 }

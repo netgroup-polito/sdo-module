@@ -11,6 +11,12 @@ public class Host
 		ip = _ip;
 		mac = _mac;
 	}
+	
+	public Host(String _ip, String _mac)
+	{
+		ip = _ip;
+		mac = new MacAddress(_mac);
+	}
 
 	public MacAddress getMacAddress()
 	{

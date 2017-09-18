@@ -2,6 +2,7 @@ package it.polito.netgroup.datastoreclient;
 
 import java.io.IOException;
 
+import it.polito.netgroup.infrastructureOrchestrator.HttpResponseReader;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -11,7 +12,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import it.polito.netgroup.natmonitor.HttpResponseReader;
 import it.polito.netgroup.nffg_template.json.NF_FGTemplateExtended;
 
 public class DatastoreClient

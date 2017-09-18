@@ -1,17 +1,13 @@
 package it.polito.netgroup.selforchestratingservices.declarative;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
+import java.util.logging.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import it.polito.netgroup.configurationorchestrator.ConfigurationOrchestratorFrog4;
-import it.polito.netgroup.configurationorchestrator.ConfigurationOrchestratorAuthenticationException;
-import it.polito.netgroup.configurationorchestrator.ConfigurationOrchestratorConfigurationNotFoundException;
-import it.polito.netgroup.configurationorchestrator.ConfigurationOrchestratorHTTPException;
-import it.polito.netgroup.configurationorchestrator.ConfigurationOrchestratorNotAuthenticatedException;
-import it.polito.netgroup.configurationorchestrator.ConfigurationSDN;
+import it.polito.netgroup.configurationorchestrator.*;
 import it.polito.netgroup.datastoreclient.DatastoreClient;
 import it.polito.netgroup.datastoreclient.DatastoreClientAuthenticationException;
 import it.polito.netgroup.datastoreclient.DatastoreClientHTTPException;
@@ -22,54 +18,58 @@ import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorA
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorHTTPException;
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorNF_FGNotFoundException;
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorNotAuthenticatedException;
-import it.polito.netgroup.nffg.json.Action;
-import it.polito.netgroup.nffg.json.DuplicateFlowRuleException;
-import it.polito.netgroup.nffg.json.DuplicateVNFException;
-import it.polito.netgroup.nffg.json.FlowRule;
-import it.polito.netgroup.nffg.json.Match;
-import it.polito.netgroup.nffg.json.NF_FGExtended;
-import it.polito.netgroup.nffg.json.PortUniqueID;
-import it.polito.netgroup.nffg.json.VNFExtended;
+import it.polito.netgroup.nffg.json.*;
 import it.polito.netgroup.nffg_template.json.NF_FGTemplateExtended;
 import it.polito.netgroup.nffg_template.json.NotImplementedYetException;
-import it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.LoadBalancerInfrastructureResource;
+import it.polito.netgroup.selforchestratingservices.RandomString;
 import it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource;
-import it.polito.netgroup.selforchestratingservices.declarative.monitors.Monitor;
+import it.polito.netgroup.selforchestratingservices.declarative_new.Framework;
+import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureEventHandler;
+import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource;
+// import it.polito.netgroup.selforchestratingservices.declarative.monitors.Monitor;
 
 public class InfrastructureImplementation implements Infrastructure
 {
-	HashMap<String,Monitor> monitors;
 	List<InfrastructureResource> resources;
-	HashMap<String,List<EventHandler>> handlers;
-	
+
 	String nffg_name;
 	String tenant_id;
 	DatastoreClient datastore;
 	ConfigurationOrchestratorFrog4 configurationService;
 	InfrastructureOrchestrator orchestrator;
-	
-	public InfrastructureImplementation(InfrastructureOrchestrator orchestrator,
-			DatastoreClient datastore,
-			ConfigurationOrchestratorFrog4 configuration_service,
-			String nffg_name,
-			String tenant_id)
+	Framework framework;
+	Variables variables;
+	InfrastructureEventHandler infrastructureEventHandler;
+
+	private static final Logger LOGGER = Logger.getGlobal();
+
+	public InfrastructureImplementation(Framework framework,
+	                                    Variables variables,
+	                                    InfrastructureEventHandler eventHandler,
+	                                    InfrastructureOrchestrator orchestrator,
+	                                    DatastoreClient datastore,
+	                                    ConfigurationOrchestratorFrog4 configuration_service,
+	                                    String nffg_name,
+	                                    String tenant_id)
 	{
+		this.infrastructureEventHandler = eventHandler;
+		this.variables = variables;
+		this.framework = framework;
 		this.nffg_name = nffg_name;
 		this.tenant_id = tenant_id;
 		this.configurationService = configuration_service;
 		this.orchestrator = orchestrator;
 		this.datastore = datastore;
 		
-		this.monitors = new HashMap<>();
-		this.handlers = new HashMap<>();
 		this.resources = new ArrayList<>();
 
-        resources.add(new NatInfrastructureResource("NAT_A"));
-        resources.add(new NatInfrastructureResource("NAT_B"));
-        resources.add(new NatInfrastructureResource("NAT_C"));
-        resources.add(new NatInfrastructureResource("NAT_D"));
-        resources.add(new NatInfrastructureResource("NAT_E"));
-        resources.add(new LoadBalancerInfrastructureResource("LOADBALANCER_A"));
+		String randomstring = RandomString.generate(3);
+
+        resources.add(new NatInfrastructureResource(this,"NATA"+randomstring));
+        resources.add(new NatInfrastructureResource(this,"NATB"+randomstring));
+        //resources.add(new NatInfrastructureResource(this,"NATC"+randomstring));
+        //resources.add(new NatInfrastructureResource(this,"NATD"+randomstring));
+        //resources.add(new NatInfrastructureResource(this,"NATE"+randomstring));
 
         try
 		{
@@ -81,9 +81,9 @@ public class InfrastructureImplementation implements Infrastructure
 			System.exit(1);
 		}
 	}
+
 	@Override
-	public void freeAllResources()
-	{
+	public void freeAllResources() {
 		for(InfrastructureResource resource : resources)
 		{
 			resource.unsetUsed();
@@ -91,94 +91,25 @@ public class InfrastructureImplementation implements Infrastructure
 	}
 
 	@Override
-	public void freeResources(List<InfrastructureResource> resourcesUsed)
-	{
-		for(InfrastructureResource resourceU : resourcesUsed)
-		{
-			for(InfrastructureResource resource : resources)
-			{
-				if ( resourceU.equals(resource))
-				{
-					resource.unsetUsed();
-					break;
-				}
-			}
+	public ConfigurationSDN getConfiguration(InfrastructureResource resource) {
+		VnfForConfiguration vfc = new VnfForConfiguration(tenant_id, nffg_name, resource.getId() , resource.getFunctionalCapability() );
+		try {
+			return configurationService.getConfiguration(vfc);
+		} catch (ConfigurationOrchestratorHTTPException |
+				ConfigurationOrchestratorConfigurationNotFoundException |
+				ConfigurationOrchestratorNotAuthenticatedException |
+				ConfigurationOrchestratorAuthenticationException |
+				ConfigurationorchestratorUnsupportedFunctionalCapabilityException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
 	@Override
-	public void setResourcesUsed(List<InfrastructureResource> resourcesUsed)
+	public void addFlowRule(FlowRule flowRule) throws Exception
 	{
-		for(InfrastructureResource resourceU : resourcesUsed)
-		{
-			for(InfrastructureResource resource : resources)
-			{
-				if ( resourceU.equals(resource))
-				{
-					resource.setDefaultFlowRules(resourceU.getFlowRules());
-					resource.setConfiguration(resourceU.getConfiguration());
-					resource.setUsed();
-					break;
-				}
-			}
-		}
-	}
+		NF_FGExtended nffg;
 
-	@Override
-	public void eventLoop()
-	{
-        while (true)
-        	{
-	    		if ( monitors.size() == 0 )
-	    		{
-	    			throw new RuntimeException("Monitor list is empty.");
-	    		}
-	    		List<Monitor> monitorsCopy = new ArrayList<>(monitors.values());
-	    		
-        		for(Monitor m : monitorsCopy)
-        		{
-        			m.checkEvents();
-        		}
-        		try
-			{
-				Thread.sleep(1000);
-			} catch (InterruptedException e)
-			{
-				break;
-			}
-        		
-
-        	}
-	}
-
-	@Override
-	public void addHandler(String event_name, EventHandler handler)
-	{
-		if ( handlers.get(event_name) == null)
-		{
-			handlers.put(event_name, new ArrayList<>());
-		}
-		handlers.get(event_name).add(handler);
-	}
-       
-	@Override
-	public List<InfrastructureResource> getResourcesFreeOfType(String type)
-	{
-		List<InfrastructureResource> ret = new ArrayList<>();
-		
-		for(InfrastructureResource resource : resources)
-		{
-			if ( !resource.isUsed() && resource.getType().equals(type)) ret.add(resource.copy());
-		}
-		return ret;
-	}
-	
-	@Override
-	public void commit()
-	{
-        //logging.debug("Reading nffg %s" %(self.nffg_name))
-
-        NF_FGExtended nffg=null;
 		try
 		{
 			nffg = orchestrator.getNFFG(nffg_name);
@@ -187,80 +118,179 @@ public class InfrastructureImplementation implements Infrastructure
 				| InfrastructureOrchestratorNF_FGNotFoundException e)
 		{
 			e.printStackTrace();
+			throw new Exception("Unable to read the graph"+e.getMessage());
 		}
-        //NF_FGExtended nffg = NF_FG(self.nffg_name, self.nffg_name)
-        //logging.error("Unable to get NFFG with name '%s' : '%s'" % (self.nffg_name, ex))
+
+		nffg.addFlowRule(flowRule);
+
+		try
+		{
+			orchestrator.addNFFG(nffg);
+		}
+		catch (JsonProcessingException | InfrastructureOrchestratorHTTPException
+				| InfrastructureOrchestratorAuthenticationException
+				| InfrastructureOrchestratorNotAuthenticatedException e)
+		{
+			//e.printStackTrace();
+			throw new Exception("Unable to update the graph"+e.getMessage());
+		}
+
+	}
+
+	@Override
+	public void removeFlowRuleStartingWith(String prefix) throws Exception {
+		NF_FGExtended nffg;
+
+		try
+		{
+			nffg = orchestrator.getNFFG(nffg_name);
+		} catch (InfrastructureOrchestratorHTTPException | InfrastructureOrchestratorAuthenticationException
+				| InfrastructureOrchestratorNotAuthenticatedException
+				| InfrastructureOrchestratorNF_FGNotFoundException e)
+		{
+			e.printStackTrace();
+			throw new Exception("Unable to read the graph"+e.getMessage());
+		}
+
+		nffg.removeFlowRulesStartingWith(prefix);
+
+		try
+		{
+			orchestrator.addNFFG(nffg);
+		}
+		catch (JsonProcessingException | InfrastructureOrchestratorHTTPException
+				| InfrastructureOrchestratorAuthenticationException
+				| InfrastructureOrchestratorNotAuthenticatedException e)
+		{
+			//e.printStackTrace();
+			throw new Exception("Unable to update the graph"+e.getMessage());
+		}
+	}
+
+	@Override
+	public void useResource(Resource usedResource, ElementaryService elementaryService) {
+		for(InfrastructureResource resource : resources)
+		{
+			if ( usedResource.getId().equals(resource.getId()))
+			{
+				resource.setUsed(elementaryService);
+				resource.applyTemplate(elementaryService.getCurrentImplementation().getTemplate(resource.getClass()));
+			}
+		}
+	}
+
+	@Override
+	public void commit() throws Exception
+	{
+		List<InfrastructureResource> listAdded = new ArrayList<>();
+		List<InfrastructureResource> listRemoved = new ArrayList<>();
+
+		LOGGER.info("Commit changes to infrastructure");
+
+        NF_FGExtended nffg;
+		try
+		{
+			LOGGER.info("Getting current NFFG");
+			nffg = orchestrator.getNFFG(nffg_name);
+		} catch (InfrastructureOrchestratorHTTPException | InfrastructureOrchestratorAuthenticationException
+				| InfrastructureOrchestratorNotAuthenticatedException
+				| InfrastructureOrchestratorNF_FGNotFoundException e)
+		{
+			LOGGER.warning("Unable to get current NFFG: "+e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
          
         List<InfrastructureResource> configurationQueue = new ArrayList<>();
-        
-        for(InfrastructureResource resource : resources)
+
+
+		for(InfrastructureResource resource : resources)
         {
+        	LOGGER.info("Checking Resource '"+resource.getId()+"'");
+
     		if (resource.isUsed())
     		{
+			    LOGGER.info("Resource '"+resource.getId()+"' is used");
+
     			if ( resource.isVNF() && !resource.isInstantiated())
     			{
-        			VNFExtended vnf = buildVNF(resource);
+				    LOGGER.info("Resource '"+resource.getId()+"' is not instantiated");
+
+				    VNFExtended vnf = buildVNF(resource);
         			
         			try
 					{
+						LOGGER.info("Adding Resource '"+resource.getId()+"' to NFFG");
 						nffg.addVNF(vnf);
-						resource.setInstantiated();
 					}
         			catch (DuplicateVNFException e)
 					{
-						e.printStackTrace();
+						LOGGER.warning("Unable to add Resource '"+resource.getId()+"' to NFFG: "+e.getMessage());
+						throw e;
 					}
+
+					LOGGER.info("Reading flowrule for Resource '"+resource.getId()+"'");
+				    for(DeclarativeFlowRule dfr : resource.getFlowRules())
+				    {
+					    LOGGER.info("DeclarativeFlowRule '"+dfr.getId()+"' Resource '"+resource.getId()+"'");
+
+					    try
+					    {
+						    for(FlowRule flowRule : buildFlowRules(nffg,resource,dfr))
+						    {
+							    try
+							    {
+								    LOGGER.info("Adding FlowRule '"+flowRule.getId()+"'");
+								    nffg.addFlowRule(flowRule);
+							    }
+							    catch (DuplicateFlowRuleException e)
+							    {
+								    LOGGER.info("Unable to add FlowRule '"+flowRule.getId()+"':"+e.getMessage());
+								    throw e;
+							    }
+						    }
+					    }
+					    catch (Exception e)
+					    {
+						    LOGGER.info("Unable to build FlowRule from DeclarativeFlowRule '"+dfr.getId()+"' Resource '"+resource.getId()+"':"+e.getMessage());
+						    throw e;
+					    }
+				    }
+
+				    if ( resource.getConfiguration() != null )
+				    {
+					    LOGGER.info("Adding Resource '"+resource.getId()+"' inside the configuration Queue");
+					    configurationQueue.add(resource);
+				    }
+				    listAdded.add(resource);
 		    	}
-		    			
-				for(DeclarativeFlowRule dfr : resource.getFlowRules())
-				{
-					if ( dfr.isNew() )
-					{
-						try
-						{
-							for(FlowRule flowRule : buildFlowRules(nffg,resource,dfr))
-							{
-								try
-								{
-									nffg.addFlowRule(flowRule);
-									dfr.unsetNew();
-								}
-								catch (DuplicateFlowRuleException e)
-								{
-									e.printStackTrace();
-								}	
-							}
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}
-					}
-					if ( dfr.toRemove() )
-					{
-						nffg.removeFlowRulesStartingWith(dfr.getId());
-					}
-		    	}
-        		
-				if ( ! resource.isConfigured() )
-				{
-					if ( resource.getConfiguration() != null )
-					{
-						configurationQueue.add(resource);
-					}
-				}
 	        }
+	        else if ( !resource.isUsed() && resource.isInstantiated() )
+		    {
+			    LOGGER.info("Removing Resource '"+resource.getId()+"' from NFFG");
+
+			    infrastructureEventHandler.on_resource_removing(resource);
+
+			    if ( resource.isVNF() )
+			    {
+					nffg.removeVNF(resource.getId());
+			    }
+
+			    listRemoved.add(resource);
+		    }
         }
 
         try
 		{
+			LOGGER.info("Updating the NFFG");
 			orchestrator.addNFFG(nffg);
 		}
         catch (JsonProcessingException | InfrastructureOrchestratorHTTPException
 				| InfrastructureOrchestratorAuthenticationException
 				| InfrastructureOrchestratorNotAuthenticatedException e)
 		{
-			e.printStackTrace();
+			LOGGER.info("Unable to update the NFFG: "+e.getMessage());
+			throw e;
 		}
      
         for (InfrastructureResource resource : configurationQueue)
@@ -278,51 +308,62 @@ public class InfrastructureImplementation implements Infrastructure
 				configurationService.setConfiguration(config);
 
 			}
-            catch (InterruptedException | ConfigurationOrchestratorHTTPException
-					| ConfigurationOrchestratorAuthenticationException
-					| ConfigurationOrchestratorConfigurationNotFoundException
-					| ConfigurationOrchestratorNotAuthenticatedException e)
+            catch (InterruptedException | ConfigurationOrchestratorHTTPException | ConfigurationOrchestratorAuthenticationException | ConfigurationOrchestratorConfigurationNotFoundException | ConfigurationOrchestratorNotAuthenticatedException | JsonProcessingException e)
 			{
 				e.printStackTrace();
+				throw e;
 			}
-            catch (JsonProcessingException e)
-			{
-				e.printStackTrace();
-			}
-            
-            raiseEvent("on_"+resource.getType()+"_added","INFRASTRUCTURE",this,resource,resource);
 
-            if ( monitors.get(resource.getType()) == null )
-            	{
-            		Monitor monitor = Monitor.getMonitor(resource.getType(), this);
-            		monitor.setTenantId(tenant_id);
-            		monitor.setNFFGName(nffg_name);
-            		monitor.setConfigurationService(configurationService);
-            		if (monitor != null )
-            		{
-            			monitors.put(resource.getType(),monitor);
-            		}
-            	}
-            monitors.get(resource.getType()).addResource(resource);
-            resource.isConfigured();
-        }
-	}
-	
-	
-	public void raiseEvent(String event_name, String from_name, Object fromobj, InfrastructureResource on_resource, Object args)
-	{
-		if (handlers.get(event_name) != null)
-		{
-			for(EventHandler handler : handlers.get(event_name))
-			{
-				handler.fire(event_name,from_name,fromobj,on_resource,args);
+	        while (true) {
+            	try {
+		            resource.getTemplate().init(variables, resource, framework);
+		            break;
+	            }catch(Exception ex)
+	            {
+	            	ex.printStackTrace();
+	            	System.out.println("Unable set the configuration for the resource with id '"+resource.getId()+"', try again");
+	            	try {
+			            Thread.sleep(1000);
+		            }catch(Exception ex2)
+		            {
+		            	ex2.printStackTrace();
+		            	break;
+		            }
+	            }
+
 			}
+            resource.setInstantiated();
+        }
+
+        for(InfrastructureResource resource : listAdded)
+        {
+	        infrastructureEventHandler.on_resource_added(resource);
+	        resource.setInstantiated();
+        }
+
+		for(InfrastructureResource resource : listRemoved)
+		{
+			infrastructureEventHandler.on_resource_removed(resource);
+			resource.unsetInstantiated();
 		}
 	}
-	
-	private List<FlowRule> buildFlowRules(NF_FGExtended nffg, InfrastructureResource resource, DeclarativeFlowRule dfr) throws Exception
-	{
-		String port_from = dfr.getMatchPortIn();
+
+	@Override
+	public void updateResourceAvailable() {
+		//TODO
+	}
+
+	@Override
+	public List<Resource> getResources() {
+		List<Resource> ret = new ArrayList<>();
+
+		ret.addAll(resources);
+
+		return ret;
+	}
+
+
+	private PortUniqueID getPortUniqueId(String port_from,InfrastructureResource resource , NF_FGExtended nffg) throws Exception {
 		PortUniqueID vnf_port_from = null;
 
 		if ( port_from != null )
@@ -344,7 +385,7 @@ public class InfrastructureImplementation implements Infrastructure
 				port_from_vnf = arr[0];
 				port_from_label = arr[1];
 				VNFExtended vnf = nffg.getVNF(port_from_vnf);
-				vnf_port_from = vnf.getFirstFreeFullnamePortByLabel(nffg, port_from_label);		
+				vnf_port_from = vnf.getFirstFreeFullnamePortByLabel(nffg, port_from_label);
 			}
 			else if (arr.length == 3)
 			{
@@ -358,50 +399,29 @@ public class InfrastructureImplementation implements Infrastructure
 				throw new Exception("Invalid Resource FlowRule From Port "+ port_from);
 			}
 		}
-		
-		String port_to = dfr.getActionOutputToPort();
-		PortUniqueID vnf_port_to = null;
 
-		if (port_to != null)
+		return vnf_port_from;
+	}
+
+	private List<FlowRule> buildFlowRules(NF_FGExtended nffg, InfrastructureResource resource, DeclarativeFlowRule dfr) throws Exception
+	{
+		PortUniqueID vnf_port_from = getPortUniqueId(dfr.getMatchPortIn(),resource,nffg);
+		PortUniqueID vnf_port_to = getPortUniqueId(dfr.getActionOutputToPort(),resource,nffg);
+
+		if ( vnf_port_from == null)
 		{
-			String[] arr2 = port_to.split(":");
-			String port_to_vnf =  null;
-			String port_to_label = null;
-			String port_to_number = null;
-			if (arr2.length== 1)
-			{
-				if ( ! resource.isVNF() ) throw new Exception("Invalid flow rule for non-VNF resource");
-	
-				port_to_vnf = resource.getId();
-				port_to_label = port_to;
-				VNFExtended vnf = nffg.getVNF(port_to_vnf);
-				vnf_port_to = vnf.getFirstFreeFullnamePortByLabel(nffg, port_to_label);
-			}
-			else if (arr2.length == 2 )
-			{
-				port_to_vnf = arr2[0];
-				port_to_label = arr2[1];
-				VNFExtended vnf = nffg.getVNF(port_to_vnf);
-				vnf_port_to = vnf.getFirstFreeFullnamePortByLabel(nffg, port_to_label);
-			}
-			else if (arr2.length == 3)
-			{
-				port_to_vnf = arr2[0];
-				port_to_label = arr2[1];
-				port_to_number = arr2[3];
-				vnf_port_to = new PortUniqueID("vnf:"+port_to_vnf + ":" + port_to_label + ":" + port_to_number);
-			}
-			else
-			{
-				throw new Exception("Invalid Resource FlowRule From Port "+ port_from);
-			}
-		}       
+			throw new Exception("'vnf_port_from' is null for "+dfr.getMatchPortIn());
+		}
+		if ( vnf_port_to == null)
+		{
+			throw new Exception("'vnf_port_to' is null for "+dfr.getActionOutputToPort());
+		}
 
-		if ( !nffg.existPort(vnf_port_from) )
+		if (!nffg.existPort(vnf_port_from) )
 		{
 			throw new Exception("Port with id:"+vnf_port_from.getValue()+" is invalid");
 		}
-		if ( !nffg.existPort(vnf_port_to) )
+		if (!nffg.existPort(vnf_port_to) )
 		{
 			throw new Exception("Port with id:"+vnf_port_to.getValue()+" is invalid");
 		}
@@ -412,7 +432,7 @@ public class InfrastructureImplementation implements Infrastructure
 		{
 			actionFr1.setOutputToPort(vnf_port_to.getValue());
 		}
-		List<Action> actionsFr1 = new ArrayList<Action>();
+		List<Action> actionsFr1 = new ArrayList<>();
 		actionsFr1.add(actionFr1);
 		Match matchFr1 = new Match();
 		
@@ -422,7 +442,7 @@ public class InfrastructureImplementation implements Infrastructure
 		}
 		
 		FlowRule fr1 = new FlowRule();
-		fr1.setId(dfr.getId());
+		fr1.setId(resource.getId()+"_"+dfr.getId()+"_1");
 		fr1.setMatch(matchFr1);
 		
 		if ( dfr.getPriority() != null )
@@ -448,7 +468,7 @@ public class InfrastructureImplementation implements Infrastructure
 			{
 				actionFr2.setOutputToPort(vnf_port_from.getValue());
 			}
-			List<Action> actionsFr2 = new ArrayList<Action>();
+			List<Action> actionsFr2 = new ArrayList<>();
 			actionsFr2.add(actionFr2);
 			Match matchFr2 = new Match();
 			
@@ -458,7 +478,7 @@ public class InfrastructureImplementation implements Infrastructure
 			}
 			
 			FlowRule fr2 = new FlowRule();
-			fr2.setId(dfr.getId()+"_2");
+			fr2.setId(resource.getId()+"_"+dfr.getId()+"_2");
 			fr2.setMatch(matchFr2);
 			
 			if ( dfr.getPriority() != null )
@@ -484,7 +504,7 @@ public class InfrastructureImplementation implements Infrastructure
 		NF_FGTemplateExtended template;
 		try
 		{
-			template = datastore.getTemplate(resource.getType());
+			template = datastore.getTemplate(resource.getDatastoreTemplate());
 		}
 		catch (DatastoreClientHTTPException | DatastoreClientNotAuthenticatedException
 				| DatastoreClientTemplateNotFoundException | DatastoreClientAuthenticationException e1)
@@ -503,4 +523,5 @@ public class InfrastructureImplementation implements Infrastructure
 		}
 		return null;
 	}
+
 }

@@ -2,46 +2,28 @@ package it.polito.netgroup.selforchestratingservices;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import it.polito.netgroup.selforchestratingservices.auto.NatResourceRequirement;
 import it.polito.netgroup.selforchestratingservices.declarative.*;
+import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource;
+import org.reflections.Reflections;
 
 //AUTO
 public abstract class AbstractImplementation implements Implementation
 {
 	protected Variables var;
 	protected List<ResourceRequirement> resources;
-	protected List<InfrastructureResource> infraResourcesUsed;
+	protected List<Class<? extends ResourceTemplate>> resourceTemplates;
 	protected String name;
 	
-	public AbstractImplementation(Variables var)
+	public AbstractImplementation(Variables var,List<Class<? extends ResourceTemplate>> _resourceTemplates)
 	{
 		this.var = var;
 		
-		resources = new ArrayList<ResourceRequirement>();
-		infraResourcesUsed = null;
-		
-	    resources.add(new NatResourceRequirement(var));
+		resources = new ArrayList<>();
+		resourceTemplates = _resourceTemplates;
 	}
-	
-	@Override
-	public void show()
-	{
-		// TODO Auto-generated method stub
-	}
-	
-	@Override
-	public void setResoucesUsed(List<InfrastructureResource> r)
-	{
-		infraResourcesUsed = new ArrayList<>(r);
-	}
-	
-	@Override
-	public List<InfrastructureResource> getResourcesUsed()
-	{
-		return infraResourcesUsed;
-	}
-		
+
 	@Override
 	public String getName()
 	{
@@ -55,9 +37,22 @@ public abstract class AbstractImplementation implements Implementation
 	}
 
 	@Override
-	public RealizedImplementation getRealizedImplementation(List<InfrastructureResource> resources_used)
+	public ResourceTemplate getTemplate(Class<? extends Resource> aClass)
 	{
-		return new RealizedImplementationImpl(this,resources_used);
+		for(Class<? extends ResourceTemplate> resourceTemplateClass : resourceTemplates)
+		{
+			try
+			{
+				ResourceTemplate m = resourceTemplateClass.newInstance();
+
+				if ( m.getType().equals(aClass) ) return m;
+			}
+			catch (InstantiationException | IllegalAccessException e)
+			{
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return null;
 	}
-		
 }

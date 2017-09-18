@@ -1,55 +1,26 @@
 package it.polito.netgroup.selforchestratingservices.auto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.security.*;
+import java.util.*;
+import java.util.stream.*;
+import it.polito.netgroup.configurationorchestrator.*;
+import it.polito.netgroup.configurationorchestrator.json.nat.*;
+import it.polito.netgroup.selforchestratingservices.*;
+import it.polito.netgroup.nffg.json.*;
+import it.polito.netgroup.selforchestratingservices.declarative_new.*;
+import it.polito.netgroup.selforchestratingservices.declarative.*;
+import it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.*;
+import it.polito.netgroup.selforchestratingservices.declarative.dirtychecker.*;
 
-import it.polito.netgroup.selforchestratingservices.declarative.ElementaryService;
-import it.polito.netgroup.selforchestratingservices.declarative.Implementation;
-import it.polito.netgroup.selforchestratingservices.declarative.RealizedImplementation;
-import it.polito.netgroup.selforchestratingservices.declarative.Variables;
-
-//AUTO
-
-public class NatElementaryService implements ElementaryService
-{	
-	List<Implementation> implementations;
-	RealizedImplementation realized;
-	
+//Autogenerted class
+public class NatElementaryService extends AbstractElementaryService
+{
 	public NatElementaryService(Variables var)
 	{
-		implementations = new ArrayList<>();
-		implementations.add(new NatImplementation1(var));
-		realized = null;
-	}
-	
-	@Override
-	public void show()
-	{
-		// TODO Auto-generated method stub
-	}
-	
-	@Override
-	public String getName()
-	{
-		return "nat";
-	}
-	
-	@Override
-	public List<Implementation> getImplementations()
-	{
-		return implementations;
-	}
-	
-	@Override
-	public void commit()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setRelizedImplementation(RealizedImplementation realizedImplementation)
-	{
-		realized = realizedImplementation;
+		super(var);
+		List<Class<? extends ResourceTemplate>> resourceTemplates = new ArrayList<>();
+		resourceTemplates.add(NatInfrastructureResourceResourceTemplate.class);
+		implementations.add(new NatImplementation1Implementation(var,resourceTemplates));
+		name = "nat";
 	}
 }

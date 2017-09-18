@@ -15,16 +15,17 @@ public class VariablesImplementation implements Variables
 	@Override
 	public <T> T getVar(String name, Class<T> type) throws InvalidVarNameException, InvalidVarTypeException
 	{
-		if ( map.get(name) == null)
+		Object var = map.get(name);
+		if ( var == null)
 		{
 			throw new InvalidVarNameException();
 		}
-		if ( ! type.isInstance(map.get(name)) )
+		if ( ! type.isInstance(var) )
 		{
 			throw new InvalidVarTypeException();
 		}
 		
-		return (T) map.get(name);
+		return (T) var;
 	}
 
 	@Override

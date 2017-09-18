@@ -4,10 +4,10 @@ import java.util.List;
 
 public interface ElementaryService
 {
-	public List<Implementation> getImplementations();
-	public String getName();
-	public void show();
-	public void commit();
-	public void setRelizedImplementation(RealizedImplementation realizedImplementation);
-	//public ConfigurationSDN getConfiguration();
+	List<Implementation> getImplementations();
+	String getName();
+
+	void setCurrentImplementation(Implementation implementation);
+
+	Implementation getCurrentImplementation();
 }
