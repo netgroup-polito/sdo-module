@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>it.polito.netgroup.selforchestratingservices</OriginalElement>
+  <nodes>
+    <node x="485.25" y="1609.0">it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.AbstractBasicInfrastructureResource</node>
+    <node x="304.66152493202117" y="2030.0">it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource</node>
+    <node x="1681.517774932021" y="2996.0">it.polito.netgroup.selforchestratingservices.auto.MySelfOrchestrator</node>
+    <node x="2439.5117616834236" y="2499.0">it.polito.netgroup.selforchestratingservices.declarative.SelfOrchestrator</node>
+    <node x="109.40920129007691" y="2805.5">it.polito.netgroup.selforchestratingservices.auto.MyInfrastructureEventHandler</node>
+    <node x="2098.5117616834236" y="2783.5">it.polito.netgroup.selforchestratingservices.declarative.AbstractSelfOrchestrator</node>
+    <node x="3553.413888888889" y="464.0">it.polito.netgroup.selforchestratingservices.declarative_new.ResourceManager</node>
+    <node x="1620.18125" y="2253.0">it.polito.netgroup.selforchestratingservices.auto.NatInfrastructureResourceResourceTemplate</node>
+    <node x="1323.0742616834236" y="1222.0">it.polito.netgroup.selforchestratingservices.declarative.Implementation</node>
+    <node x="1144.1890853253676" y="2543.0">it.polito.netgroup.selforchestratingservices.declarative_new.AbstractInfrastructureEventHandler</node>
+    <node x="3477.288888888889" y="704.0">it.polito.netgroup.selforchestratingservices.declarative_new.Framework</node>
+    <node x="3796.5265853253677" y="2783.0">it.polito.netgroup.selforchestratingservices.declarative_new.MyFramework</node>
+    <node x="692.0" y="1390.0">it.polito.netgroup.selforchestratingservices.AbstractImplementation</node>
+    <node x="3911.3173172389793" y="464.0">it.polito.netgroup.selforchestratingservices.declarative.dirtychecker.DirtyChecker</node>
+    <node x="2645.2781915986875" y="398.0">it.polito.netgroup.selforchestratingservices.declarative.Infrastructure</node>
+    <node x="3175.538888888889" y="1741.0">it.polito.netgroup.selforchestratingservices.declarative_new.MyResourceManager</node>
+    <node x="2849.5117616834236" y="2454.0">it.polito.netgroup.selforchestratingservices.declarative.InfrastructureImplementation</node>
+    <node x="572.0072973977094" y="985.0">it.polito.netgroup.selforchestratingservices.declarative.ResourceRequirement</node>
+    <node x="958.0072973977094" y="974.0">it.polito.netgroup.selforchestratingservices.declarative.ResourceTemplate</node>
+    <node x="498.1890853253676" y="2531.5">it.polito.netgroup.selforchestratingservices.auto.NatImplementation1Implementation</node>
+    <node x="1612.017774932021" y="2839.0">it.polito.netgroup.selforchestratingservices.auto.NatElementaryService</node>
+    <node x="2631.9110672389793" y="0.0">it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource</node>
+    <node x="1362.1890853253676" y="1730.5">it.polito.netgroup.selforchestratingservices.AbstractElementaryService</node>
+    <node x="2050.452951290077" y="1402.0">it.polito.netgroup.selforchestratingservices.declarative.ElementaryService</node>
+    <node x="21.5" y="2264.0">it.polito.netgroup.selforchestratingservices.auto.NatImplementation1NatInfrastructureResourceResourceRequirement</node>
+    <node x="2114.5117616834236" y="2276.0">it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureEventHandler</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatElementaryService" target="it.polito.netgroup.selforchestratingservices.auto.NatInfrastructureResourceResourceTemplate">
+      <point x="34.0" y="-25.5" />
+      <point x="1782.017774932021" y="2763.0" />
+      <point x="1799.68125" y="2763.0" />
+      <point x="0.0" y="70.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.Infrastructure" target="it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource">
+      <point x="-110.25" y="-103.0" />
+      <point x="2755.5281915986875" y="378.0" />
+      <point x="2786.9110672389793" y="378.0" />
+      <point x="5.6843418860808015E-14" y="169.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.MySelfOrchestrator" target="it.polito.netgroup.selforchestratingservices.auto.NatElementaryService">
+      <point x="0.0" y="-25.5" />
+      <point x="68.0" y="25.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyResourceManager" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceRequirement">
+      <point x="-30.0" y="-48.5" />
+      <point x="3250.538888888889" y="1589.0" />
+      <point x="3260.038888888889" y="1589.0" />
+      <point x="3260.038888888889" y="1112.0" />
+      <point x="901.4072973977093" y="1112.0" />
+      <point x="146.39999999999986" y="48.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.SelfOrchestrator" target="it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureEventHandler">
+      <point x="-130.0" y="-69.5" />
+      <point x="2504.5117616834236" y="2434.0" />
+      <point x="2291.845095016757" y="2434.0" />
+      <point x="25.333333333333258" y="47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.InfrastructureImplementation" target="it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureEventHandler">
+      <point x="-380.3333333333335" y="-114.5" />
+      <point x="3039.67842835009" y="2414.0" />
+      <point x="2393.17842835009" y="2414.0" />
+      <point x="126.66666666666652" y="47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.AbstractBasicInfrastructureResource" target="it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource">
+      <point x="-188.57142857142844" y="-180.5" />
+      <point x="516.6785714285716" y="1589.0" />
+      <point x="490.1890853253676" y="1589.0" />
+      <point x="490.1890853253676" y="358.0" />
+      <point x="2654.0539243818366" y="358.0" />
+      <point x="-132.85714285714286" y="169.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.SelfOrchestrator" target="it.polito.netgroup.selforchestratingservices.declarative.ElementaryService">
+      <point x="0.0" y="-69.5" />
+      <point x="2634.5117616834236" y="2434.0" />
+      <point x="2683.0117616834236" y="2434.0" />
+      <point x="2683.0117616834236" y="1589.0" />
+      <point x="2249.140451290077" y="1589.0" />
+      <point x="54.1875" y="47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.MySelfOrchestrator" target="it.polito.netgroup.selforchestratingservices.auto.MyInfrastructureEventHandler">
+      <point x="-107.60000000000002" y="-25.5" />
+      <point x="1708.4177749320208" y="2976.0" />
+      <point x="271.4092012900769" y="2976.0" />
+      <point x="0.0" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyFramework" target="it.polito.netgroup.selforchestratingservices.declarative_new.Framework">
+      <point x="-64.22222222222217" y="-81.5" />
+      <point x="3876.8043631031455" y="2703.0" />
+      <point x="4027.3173172389793" y="2703.0" />
+      <point x="4027.3173172389793" y="954.0" />
+      <point x="3722.938888888889" y="954.0" />
+      <point x="101.14999999999998" y="70.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyResourceManager" target="it.polito.netgroup.selforchestratingservices.declarative.Implementation">
+      <point x="-60.0" y="-48.5" />
+      <point x="3220.538888888889" y="1559.0" />
+      <point x="2551.298286615445" y="1559.0" />
+      <point x="2551.298286615445" y="1360.0" />
+      <point x="1727.3242616834236" y="1360.0" />
+      <point x="183.75" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.ResourceTemplate" target="it.polito.netgroup.selforchestratingservices.declarative_new.Framework">
+      <point x="80.75" y="-59.0" />
+      <point x="1200.2572973977094" y="884.0" />
+      <point x="3491.7388888888886" y="884.0" />
+      <point x="-130.04999999999998" y="70.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.InfrastructureImplementation" target="it.polito.netgroup.selforchestratingservices.declarative.Infrastructure">
+      <point x="0.0" y="-114.5" />
+      <point x="3420.0117616834236" y="2434.0" />
+      <point x="3509.112673512299" y="2434.0" />
+      <point x="3509.112673512299" y="864.0" />
+      <point x="3396.038888888889" y="864.0" />
+      <point x="3396.038888888889" y="674.0" />
+      <point x="2931.9281915986876" y="674.0" />
+      <point x="66.15000000000009" y="103.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyResourceManager" target="it.polito.netgroup.selforchestratingservices.declarative_new.Framework">
+      <point x="90.0" y="-48.5" />
+      <point x="3370.538888888889" y="1579.0" />
+      <point x="3339.788888888889" y="1579.0" />
+      <point x="3339.788888888889" y="934.0" />
+      <point x="3636.2388888888886" y="934.0" />
+      <point x="14.449999999999932" y="70.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.Implementation" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceRequirement">
+      <point x="-110.25" y="-59.0" />
+      <point x="1433.3242616834236" y="1152.0" />
+      <point x="828.2072973977092" y="1152.0" />
+      <point x="73.19999999999982" y="48.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.MyInfrastructureEventHandler" target="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource">
+      <point x="0.0" y="-59.0" />
+      <point x="271.4092012900769" y="2753.0" />
+      <point x="11.0" y="2753.0" />
+      <point x="11.0" y="2233.0" />
+      <point x="342.2615249320211" y="2233.0" />
+      <point x="-150.4000000000001" y="81.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource" target="it.polito.netgroup.selforchestratingservices.declarative.Infrastructure">
+      <point x="44.285714285714334" y="169.0" />
+      <point x="2831.1967815246935" y="378.0" />
+      <point x="2976.0281915986875" y="378.0" />
+      <point x="110.25" y="-103.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyResourceManager" target="it.polito.netgroup.selforchestratingservices.declarative.Infrastructure">
+      <point x="0.0" y="-48.5" />
+      <point x="3280.538888888889" y="1589.0" />
+      <point x="3271.038888888889" y="1589.0" />
+      <point x="3271.038888888889" y="684.0" />
+      <point x="2887.8281915986877" y="684.0" />
+      <point x="22.050000000000182" y="103.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.AbstractInfrastructureEventHandler" target="it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureEventHandler">
+      <point x="0.0" y="-25.5" />
+      <point x="1323.6890853253676" y="2434.0" />
+      <point x="2139.845095016757" y="2434.0" />
+      <point x="-126.66666666666674" y="47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.AbstractSelfOrchestrator" target="it.polito.netgroup.selforchestratingservices.declarative.SelfOrchestrator">
+      <point x="162.5" y="-81.0" />
+      <point x="2456.0117616834236" y="2763.0" />
+      <point x="2504.5117616834236" y="2763.0" />
+      <point x="-130.0" y="69.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.Infrastructure" target="it.polito.netgroup.selforchestratingservices.declarative.ElementaryService">
+      <point x="-22.049999999999955" y="103.0" />
+      <point x="2843.7281915986873" y="684.0" />
+      <point x="2403.902951290077" y="684.0" />
+      <point x="2403.902951290077" y="1370.0" />
+      <point x="2291.28628462341" y="1370.0" />
+      <point x="96.33333333333326" y="-47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.AbstractImplementation" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceRequirement">
+      <point x="-222.79999999999995" y="-59.5" />
+      <point x="747.7" y="1370.0" />
+      <point x="848.0999999999999" y="1370.0" />
+      <point x="848.0999999999999" y="1172.0" />
+      <point x="681.8072973977094" y="1172.0" />
+      <point x="-73.20000000000005" y="48.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.AbstractBasicInfrastructureResource" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceTemplate">
+      <point x="0.0" y="-180.5" />
+      <point x="705.25" y="1559.0" />
+      <point x="627.4642857142856" y="1559.0" />
+      <point x="627.4642857142856" y="1182.0" />
+      <point x="978.1947973977094" y="1182.0" />
+      <point x="-141.3125" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatInfrastructureResourceResourceTemplate" target="it.polito.netgroup.selforchestratingservices.declarative_new.Framework">
+      <point x="119.66666666666663" y="-70.5" />
+      <point x="1919.3479166666666" y="2233.0" />
+      <point x="1865.8503699487778" y="2233.0" />
+      <point x="1865.8503699487778" y="894.0" />
+      <point x="3520.6388888888887" y="894.0" />
+      <point x="-101.14999999999998" y="70.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatElementaryService" target="it.polito.netgroup.selforchestratingservices.auto.NatImplementation1Implementation">
+      <point x="-102.0" y="-25.5" />
+      <point x="1646.017774932021" y="2753.0" />
+      <point x="811.1890853253676" y="2753.0" />
+      <point x="0.0" y="37.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.AbstractBasicInfrastructureResource" target="it.polito.netgroup.selforchestratingservices.declarative.ElementaryService">
+      <point x="188.57142857142856" y="-180.5" />
+      <point x="893.8214285714284" y="1559.0" />
+      <point x="2104.640451290077" y="1559.0" />
+      <point x="-90.3125" y="47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatElementaryService" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceTemplate">
+      <point x="102.0" y="-25.5" />
+      <point x="1850.017774932021" y="2763.0" />
+      <point x="1989.8479166666666" y="2763.0" />
+      <point x="1989.8479166666666" y="1122.0" />
+      <point x="1260.8197973977094" y="1122.0" />
+      <point x="141.3125" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.InfrastructureImplementation" target="it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource">
+      <point x="380.33333333333337" y="-114.5" />
+      <point x="3800.345095016757" y="2434.0" />
+      <point x="3776.788888888889" y="2434.0" />
+      <point x="3776.788888888889" y="368.0" />
+      <point x="2875.482495810408" y="368.0" />
+      <point x="88.57142857142867" y="169.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.InfrastructureImplementation" target="it.polito.netgroup.selforchestratingservices.declarative.ElementaryService">
+      <point x="-126.77777777777783" y="-114.5" />
+      <point x="3293.233983905646" y="2424.0" />
+      <point x="3110.695138888889" y="2424.0" />
+      <point x="3110.695138888889" y="1990.0" />
+      <point x="2891.7281915986873" y="1990.0" />
+      <point x="2891.7281915986873" y="1579.0" />
+      <point x="2285.265451290077" y="1579.0" />
+      <point x="90.3125" y="47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.MyInfrastructureEventHandler" target="it.polito.netgroup.selforchestratingservices.declarative_new.AbstractInfrastructureEventHandler">
+      <point x="108.0" y="-59.0" />
+      <point x="379.4092012900769" y="2763.0" />
+      <point x="1323.6890853253676" y="2763.0" />
+      <point x="0.0" y="25.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatInfrastructureResourceResourceTemplate" target="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource">
+      <point x="-119.66666666666669" y="-70.5" />
+      <point x="1680.0145833333333" y="2223.0" />
+      <point x="567.861524932021" y="2223.0" />
+      <point x="75.19999999999993" y="81.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource" target="it.polito.netgroup.selforchestratingservices.declarative.ElementaryService">
+      <point x="-44.28571428571425" y="169.0" />
+      <point x="2742.625352953265" y="378.0" />
+      <point x="2194.952951290077" y="378.0" />
+      <point x="0.0" y="-47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.AbstractBasicInfrastructureResource" target="it.polito.netgroup.selforchestratingservices.declarative.Infrastructure">
+      <point x="-125.71428571428578" y="-180.5" />
+      <point x="579.5357142857142" y="1579.0" />
+      <point x="501.1890853253676" y="1579.0" />
+      <point x="501.1890853253676" y="664.0" />
+      <point x="2755.5281915986875" y="664.0" />
+      <point x="-110.25" y="103.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.Framework" target="it.polito.netgroup.selforchestratingservices.declarative_new.ResourceManager">
+      <point x="-36.125" y="-70.0" />
+      <point x="3585.663888888889" y="684.0" />
+      <point x="3616.113888888889" y="684.0" />
+      <point x="-41.799999999999955" y="37.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyFramework" target="it.polito.netgroup.selforchestratingservices.declarative.SelfOrchestrator">
+      <point x="-96.33333333333334" y="-81.5" />
+      <point x="3844.6932519920347" y="2753.0" />
+      <point x="2764.5117616834236" y="2753.0" />
+      <point x="130.0" y="69.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.MySelfOrchestrator" target="it.polito.netgroup.selforchestratingservices.declarative_new.Framework">
+      <point x="107.60000000000002" y="-25.5" />
+      <point x="1923.617774932021" y="2976.0" />
+      <point x="4112.095095016757" y="2976.0" />
+      <point x="4112.095095016757" y="944.0" />
+      <point x="3751.8388888888885" y="944.0" />
+      <point x="130.04999999999984" y="70.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatImplementation1Implementation" target="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource">
+      <point x="-78.25" y="-37.0" />
+      <point x="732.9390853253676" y="2434.0" />
+      <point x="590.0" y="2434.0" />
+      <point x="590.0" y="2233.0" />
+      <point x="492.66152493202117" y="2233.0" />
+      <point x="0.0" y="81.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.AbstractElementaryService" target="it.polito.netgroup.selforchestratingservices.declarative.Implementation">
+      <point x="37.875" y="-59.0" />
+      <point x="1551.5640853253676" y="1370.0" />
+      <point x="1580.3242616834236" y="1370.0" />
+      <point x="36.75" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.ElementaryService" target="it.polito.netgroup.selforchestratingservices.declarative.Implementation">
+      <point x="-96.33333333333326" y="-47.5" />
+      <point x="2098.6196179567437" y="1370.0" />
+      <point x="1653.8242616834236" y="1370.0" />
+      <point x="110.25" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.InfrastructureImplementation" target="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource">
+      <point x="-253.55555555555566" y="-114.5" />
+      <point x="3166.456206127868" y="2434.0" />
+      <point x="3099.695138888889" y="2434.0" />
+      <point x="3099.695138888889" y="2213.0" />
+      <point x="643.061524932021" y="2213.0" />
+      <point x="150.39999999999986" y="81.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.Implementation" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceTemplate">
+      <point x="110.25" y="-59.0" />
+      <point x="1653.8242616834236" y="1142.0" />
+      <point x="1180.0697973977094" y="1142.0" />
+      <point x="60.5625" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyFramework" target="it.polito.netgroup.selforchestratingservices.declarative_new.ResourceManager">
+      <point x="64.22222222222217" y="-81.5" />
+      <point x="4005.24880754759" y="2743.0" />
+      <point x="4071.3173172389793" y="2743.0" />
+      <point x="4071.3173172389793" y="624.0" />
+      <point x="3741.5138888888887" y="624.0" />
+      <point x="83.59999999999991" y="37.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.Framework" target="it.polito.netgroup.selforchestratingservices.declarative.dirtychecker.DirtyChecker">
+      <point x="108.375" y="-70.0" />
+      <point x="3730.163888888889" y="684.0" />
+      <point x="3968.3173172389793" y="684.0" />
+      <point x="-114.0" y="37.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.AbstractImplementation" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceTemplate">
+      <point x="111.40000000000009" y="-59.5" />
+      <point x="1081.9" y="1370.0" />
+      <point x="1174.8234870043625" y="1370.0" />
+      <point x="1174.8234870043625" y="1202.0" />
+      <point x="1099.3197973977094" y="1202.0" />
+      <point x="-20.1875" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatImplementation1NatInfrastructureResourceResourceRequirement" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceRequirement">
+      <point x="-139.5" y="-59.5" />
+      <point x="161.0" y="1202.0" />
+      <point x="608.6072973977093" y="1202.0" />
+      <point x="-146.4000000000001" y="48.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyFramework" target="it.polito.netgroup.selforchestratingservices.declarative.Infrastructure">
+      <point x="-32.111111111111086" y="-81.5" />
+      <point x="3908.9154742142564" y="2713.0" />
+      <point x="4038.3173172389793" y="2713.0" />
+      <point x="4038.3173172389793" y="654.0" />
+      <point x="3020.1281915986874" y="654.0" />
+      <point x="154.35000000000014" y="103.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatImplementation1Implementation" target="it.polito.netgroup.selforchestratingservices.AbstractImplementation">
+      <point x="78.25" y="-37.0" />
+      <point x="889.4390853253676" y="2434.0" />
+      <point x="970.5" y="2434.0" />
+      <point x="0.0" y="59.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyFramework" target="it.polito.netgroup.selforchestratingservices.declarative.dirtychecker.DirtyChecker">
+      <point x="96.33333333333326" y="-81.5" />
+      <point x="4037.3599186587007" y="2753.0" />
+      <point x="4082.3173172389793" y="2753.0" />
+      <point x="0.0" y="37.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.Framework" target="it.polito.netgroup.selforchestratingservices.declarative.SelfOrchestrator">
+      <point x="-43.35000000000002" y="70.0" />
+      <point x="3578.438888888889" y="914.0" />
+      <point x="2946.0719415986873" y="914.0" />
+      <point x="2946.0719415986873" y="2010.0" />
+      <point x="2763.017036615445" y="2010.0" />
+      <point x="2763.017036615445" y="2434.0" />
+      <point x="2764.5117616834236" y="2434.0" />
+      <point x="130.0" y="-69.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.InfrastructureImplementation" target="it.polito.netgroup.selforchestratingservices.declarative_new.Framework">
+      <point x="126.77777777777783" y="-114.5" />
+      <point x="3546.7895394612015" y="2434.0" />
+      <point x="3616.6969415986873" y="2434.0" />
+      <point x="3616.6969415986873" y="944.0" />
+      <point x="3665.1388888888887" y="944.0" />
+      <point x="43.35000000000002" y="70.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceTemplate">
+      <point x="-88.57142857142856" y="169.0" />
+      <point x="2698.339638667551" y="368.0" />
+      <point x="1038.7572973977094" y="368.0" />
+      <point x="-80.75" y="-59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.AbstractSelfOrchestrator" target="it.polito.netgroup.selforchestratingservices.declarative_new.Framework">
+      <point x="97.5" y="-81.0" />
+      <point x="2391.0117616834236" y="2763.0" />
+      <point x="2429.0117616834236" y="2763.0" />
+      <point x="2429.0117616834236" y="2000.0" />
+      <point x="2935.0719415986873" y="2000.0" />
+      <point x="2935.0719415986873" y="904.0" />
+      <point x="3549.538888888889" y="904.0" />
+      <point x="-72.25" y="70.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.ResourceManager" target="it.polito.netgroup.selforchestratingservices.declarative_new.Framework">
+      <point x="0.0" y="37.0" />
+      <point x="36.125000000000114" y="-70.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyResourceManager" target="it.polito.netgroup.selforchestratingservices.declarative_new.ResourceManager">
+      <point x="30.0" y="-48.5" />
+      <point x="3310.538888888889" y="1589.0" />
+      <point x="3317.788888888889" y="1589.0" />
+      <point x="3317.788888888889" y="874.0" />
+      <point x="3466.788888888889" y="874.0" />
+      <point x="3466.788888888889" y="684.0" />
+      <point x="3574.313888888889" y="684.0" />
+      <point x="-83.59999999999991" y="37.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatElementaryService" target="it.polito.netgroup.selforchestratingservices.AbstractElementaryService">
+      <point x="-34.0" y="-25.5" />
+      <point x="1714.017774932021" y="2743.0" />
+      <point x="1513.6890853253676" y="2743.0" />
+      <point x="0.0" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.AbstractElementaryService" target="it.polito.netgroup.selforchestratingservices.declarative.ElementaryService">
+      <point x="113.625" y="-59.0" />
+      <point x="1627.3140853253676" y="1569.0" />
+      <point x="2140.765451290077" y="1569.0" />
+      <point x="-54.1875" y="47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatImplementation1Implementation" target="it.polito.netgroup.selforchestratingservices.auto.NatImplementation1NatInfrastructureResourceResourceRequirement">
+      <point x="-234.75" y="-37.0" />
+      <point x="576.4390853253676" y="2434.0" />
+      <point x="300.5" y="2434.0" />
+      <point x="0.0" y="59.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatImplementation1NatInfrastructureResourceResourceRequirement" target="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource">
+      <point x="139.5" y="-59.5" />
+      <point x="440.0" y="2233.0" />
+      <point x="417.46152493202135" y="2233.0" />
+      <point x="-75.20000000000002" y="81.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.MySelfOrchestrator" target="it.polito.netgroup.selforchestratingservices.declarative.AbstractSelfOrchestrator">
+      <point x="53.80000000000001" y="-25.5" />
+      <point x="1869.817774932021" y="2966.0" />
+      <point x="2293.5117616834236" y="2966.0" />
+      <point x="0.0" y="81.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.AbstractImplementation" target="it.polito.netgroup.selforchestratingservices.declarative.Implementation">
+      <point x="222.79999999999995" y="-59.5" />
+      <point x="1193.3" y="1370.0" />
+      <point x="1359.8242616834236" y="1370.0" />
+      <point x="-183.75" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.MyInfrastructureEventHandler" target="it.polito.netgroup.selforchestratingservices.declarative.Infrastructure">
+      <point x="-108.0" y="-59.0" />
+      <point x="163.4092012900769" y="2763.0" />
+      <point x="0.0" y="2763.0" />
+      <point x="0.0" y="644.0" />
+      <point x="2667.328191598687" y="644.0" />
+      <point x="-198.45000000000005" y="103.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.MyResourceManager" target="it.polito.netgroup.selforchestratingservices.declarative.ElementaryService">
+      <point x="-90.0" y="-48.5" />
+      <point x="3190.538888888889" y="1569.0" />
+      <point x="2321.390451290077" y="1569.0" />
+      <point x="126.4375" y="47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource" target="it.polito.netgroup.selforchestratingservices.declarative.Infrastructure">
+      <point x="-94.0" y="-81.5" />
+      <point x="398.66152493202117" y="2010.0" />
+      <point x="377.41152493202117" y="2010.0" />
+      <point x="377.41152493202117" y="654.0" />
+      <point x="2711.4281915986876" y="654.0" />
+      <point x="-154.35000000000002" y="103.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatInfrastructureResourceResourceTemplate" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceTemplate">
+      <point x="0.0" y="-70.5" />
+      <point x="1799.68125" y="2233.0" />
+      <point x="1807.845095016757" y="2233.0" />
+      <point x="1807.845095016757" y="1132.0" />
+      <point x="1220.4447973977094" y="1132.0" />
+      <point x="100.9375" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative_new.Framework" target="it.polito.netgroup.selforchestratingservices.declarative.Infrastructure">
+      <point x="-108.375" y="-70.0" />
+      <point x="3513.413888888889" y="664.0" />
+      <point x="2976.0281915986875" y="664.0" />
+      <point x="110.25" y="103.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.auto.NatImplementation1Implementation" target="it.polito.netgroup.selforchestratingservices.declarative.ResourceTemplate">
+      <point x="234.75" y="-37.0" />
+      <point x="1045.9390853253676" y="2434.0" />
+      <point x="1312.1875" y="2434.0" />
+      <point x="1312.1875" y="1192.0" />
+      <point x="1139.6947973977094" y="1192.0" />
+      <point x="20.1875" y="59.0" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.AbstractSelfOrchestrator" target="it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureEventHandler">
+      <point x="-32.5" y="-81.0" />
+      <point x="2261.0117616834236" y="2743.0" />
+      <point x="2172.595095016757" y="2743.0" />
+      <point x="2172.595095016757" y="2434.0" />
+      <point x="2190.5117616834236" y="2434.0" />
+      <point x="-76.0" y="47.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource" target="it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.AbstractBasicInfrastructureResource">
+      <point x="94.0" y="-81.5" />
+      <point x="586.6615249320212" y="2010.0" />
+      <point x="705.25" y="2010.0" />
+      <point x="0.0" y="180.5" />
+    </edge>
+    <edge source="it.polito.netgroup.selforchestratingservices.declarative.AbstractSelfOrchestrator" target="it.polito.netgroup.selforchestratingservices.declarative.ElementaryService">
+      <point x="-97.5" y="-81.0" />
+      <point x="2196.0117616834236" y="2753.0" />
+      <point x="2104.0117616834236" y="2753.0" />
+      <point x="2104.0117616834236" y="1589.0" />
+      <point x="2213.015451290077" y="1589.0" />
+      <point x="18.0625" y="47.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.7099771763938701" x="2127.0" y="1523.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+

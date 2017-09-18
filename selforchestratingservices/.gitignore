@@ -3,3 +3,6 @@
 .project
 *.prefs
 .classpath
+.idea
+/.idea/
+/.settings/
