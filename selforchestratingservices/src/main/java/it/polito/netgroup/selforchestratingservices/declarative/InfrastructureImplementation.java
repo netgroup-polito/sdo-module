@@ -26,6 +26,7 @@ import it.polito.netgroup.selforchestratingservices.declarative.infrastructurere
 import it.polito.netgroup.selforchestratingservices.declarative_new.Framework;
 import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureEventHandler;
 import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource;
+import it.polito.netgroup.selforchestratingservices.declarative_new.MyFramework;
 // import it.polito.netgroup.selforchestratingservices.declarative.monitors.Monitor;
 
 public class InfrastructureImplementation implements Infrastructure
@@ -38,23 +39,20 @@ public class InfrastructureImplementation implements Infrastructure
 	ConfigurationOrchestratorFrog4 configurationService;
 	InfrastructureOrchestrator orchestrator;
 	Framework framework;
-	Variables variables;
-	InfrastructureEventHandler infrastructureEventHandler;
+	//Variables variables;
+	//InfrastructureEventHandler infrastructureEventHandler;
 
 	private static final Logger LOGGER = Logger.getGlobal();
 
-	public InfrastructureImplementation(Framework framework,
-	                                    Variables variables,
-	                                    InfrastructureEventHandler eventHandler,
-	                                    InfrastructureOrchestrator orchestrator,
+	public InfrastructureImplementation(InfrastructureOrchestrator orchestrator,
 	                                    DatastoreClient datastore,
 	                                    ConfigurationOrchestratorFrog4 configuration_service,
 	                                    String nffg_name,
 	                                    String tenant_id)
 	{
-		this.infrastructureEventHandler = eventHandler;
-		this.variables = variables;
-		this.framework = framework;
+		//this.infrastructureEventHandler = null;
+		//this.variables = null;
+		this.framework = null;
 		this.nffg_name = nffg_name;
 		this.tenant_id = tenant_id;
 		this.configurationService = configuration_service;
@@ -167,6 +165,23 @@ public class InfrastructureImplementation implements Infrastructure
 		}
 	}
 
+	/*
+	@Override
+	public void setVariables(Variables _variables) {
+		variables = _variables;
+	}
+
+	@Override
+	public void setInfrastructureEventHandler(InfrastructureEventHandler _infrastructureEventhandler) {
+		infrastructureEventHandler = _infrastructureEventhandler;
+	}
+	*/
+
+	@Override
+	public void setFramework(Framework _framework) {
+		framework = _framework;
+	}
+
 	@Override
 	public void useResource(Resource usedResource, ElementaryService elementaryService) {
 		for(InfrastructureResource resource : resources)
@@ -269,7 +284,7 @@ public class InfrastructureImplementation implements Infrastructure
 		    {
 			    LOGGER.info("Removing Resource '"+resource.getId()+"' from NFFG");
 
-			    infrastructureEventHandler.on_resource_removing(resource);
+			    framework.getSelfOrchestrator().getInfrastructureEventhandler().on_resource_removing(resource);
 
 			    if ( resource.isVNF() )
 			    {
@@ -316,7 +331,7 @@ public class InfrastructureImplementation implements Infrastructure
 
 	        while (true) {
             	try {
-		            resource.getTemplate().init(variables, resource, framework);
+		            resource.getTemplate().init(framework.getSelfOrchestrator().getVariables(), resource, framework);
 		            break;
 	            }catch(Exception ex)
 	            {
@@ -337,13 +352,13 @@ public class InfrastructureImplementation implements Infrastructure
 
         for(InfrastructureResource resource : listAdded)
         {
-	        infrastructureEventHandler.on_resource_added(resource);
+	        framework.getSelfOrchestrator().getInfrastructureEventhandler().on_resource_added(resource);
 	        resource.setInstantiated();
         }
 
 		for(InfrastructureResource resource : listRemoved)
 		{
-			infrastructureEventHandler.on_resource_removed(resource);
+			framework.getSelfOrchestrator().getInfrastructureEventhandler().on_resource_removed(resource);
 			resource.unsetInstantiated();
 		}
 	}

@@ -1,0 +1,8 @@
+YANG2JAVA
+
+
+a) yang2jsonschema (pyang+https://github.com/cmoberg/pyang-json-schema-plugin)
+
+pyang --plugindir . -f json-schema config-nat.yang
+
+b) jsonschema2javaPOJO (jsonschema2pojo-maven-plugin)

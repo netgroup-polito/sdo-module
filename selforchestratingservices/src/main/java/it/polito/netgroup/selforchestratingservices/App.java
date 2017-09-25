@@ -143,15 +143,6 @@ public class App
 		}
 		
 		try {
-			Infrastructure myInfrastructure = new InfrastructureImplementation(myFramework,
-					mySelfOrchestrator.getVariables(),
-					mySelfOrchestrator.getInfrastructureEventhandler(),
-					orchestrator,
-					datastore,
-					configurationService,
-					nffg_name,
-					tenant_id);
-
 			try {
 				orchestrator.addNFFG(nffg_name, nffg_json);
 			} catch (JsonProcessingException | InfrastructureOrchestratorHTTPException
@@ -159,6 +150,12 @@ public class App
 					| InfrastructureOrchestratorNotAuthenticatedException e) {
 				System.exit(1);
 			}
+
+			Infrastructure myInfrastructure = new InfrastructureImplementation(orchestrator,
+					datastore,
+					configurationService,
+					nffg_name,
+					tenant_id);
 
 			myFramework.setResourceManager(myResourceManager);
 			myFramework.setSelfOrchestrator(mySelfOrchestrator);

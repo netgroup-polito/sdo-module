@@ -8,7 +8,10 @@ import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorN
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorNotAuthenticatedException;
 import it.polito.netgroup.nffg.json.FlowRule;
 import it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.NatInfrastructureResource;
+import it.polito.netgroup.selforchestratingservices.declarative_new.Framework;
+import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureEventHandler;
 import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource;
+import it.polito.netgroup.selforchestratingservices.declarative_new.MyFramework;
 
 import java.util.List;
 
@@ -29,4 +32,10 @@ public interface Infrastructure {
 	void addFlowRule(FlowRule flowRule) throws Exception;
 
 	void removeFlowRuleStartingWith(String prefix) throws Exception;
+
+	//void setVariables(Variables variables);
+
+	//void setInfrastructureEventHandler(InfrastructureEventHandler infrastructureEventhandler);
+
+	void setFramework(Framework framework);
 }

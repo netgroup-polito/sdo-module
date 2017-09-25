@@ -30,6 +30,7 @@ public class MyFramework implements Framework {
 	public void setSelfOrchestrator(SelfOrchestrator _selfOrchestrator)
 	{
 		selfOrchestrator = _selfOrchestrator;
+
 	}
 
 	@Override
@@ -51,6 +52,7 @@ public class MyFramework implements Framework {
 	@Override
 	public void setInfrastructure(Infrastructure _infrastructure) {
 		infrastructure = _infrastructure;
+		infrastructure.setFramework(this);
 	}
 	@Override
 	public Infrastructure getInfrastructure() {

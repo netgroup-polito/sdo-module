@@ -51,20 +51,35 @@ public class MyResourceManager implements ResourceManager{
 
 		for (ElementaryService elementaryService : framework.getSelfOrchestrator().getElementaryServices())
 		{
-			LOGGER.info("Selecting best implementation for the elementary service '"+elementaryService.getName()+"'");
+			LOGGER.info("Selecting the best implementation for the elementary service '"+elementaryService.getName()+"'");
 
 			BestImplementation bestImplementation = null;
+			//Init with current used resources by this elementaryService
+			//bestImplementation = new BestImplementation(elementaryService.getCurrentImplementation(),elementaryService.getResourcesUsed());
+//			for(Resource r : elementaryService.getResourcesUsed())
+//			{
+//					Resource used = resourcesUsed.get(r.getId());
+//					if ( used == null)
+//					{
+//						resourcesUsed.put(r.getId(),r);
+//					}
+//					else
+//					{
+//						//Trigger execption
+//					}
+//			}
+
 			for (Implementation implementation : elementaryService.getImplementations())
 			{
-				LOGGER.info("Checking implementation '"+implementation.getName()+"' for '"+elementaryService.getName()+"'");
+				LOGGER.info("Checking the implementation '"+implementation.getName()+"' for '"+elementaryService.getName()+"'");
 
 				for (ResourceRequirement resourceRequirement : implementation.getResourceRequirement())
 				{
-					LOGGER.info("Checking ResourceRequirement for '"+resourceRequirement.getResourceClass().getName()+"'");
+					LOGGER.info("Checking the ResourceRequirement for '"+resourceRequirement.getResourceClass().getName()+"'");
 
 					for (Resource resource : resources)
 					{
-						LOGGER.info("Checking for Resource '"+resource.getClass().getName()+" with id '"+resource.getId()+"'");
+						LOGGER.info("Checking Resource '"+resource.getClass().getName()+" with id '"+resource.getId()+"'");
 
 						if ( resourceRequirement.getResourceClass().isInstance(resource) )
 						{
@@ -87,9 +102,9 @@ public class MyResourceManager implements ResourceManager{
 
 									Double currentQos = implementation.getQoS(resourcesUsed.values());
 
-									LOGGER.info("Current best qos is "+bestQos.toString()+" current qos is "+currentQos.toString());
+									LOGGER.info("The current best qos is "+bestQos.toString()+" current qos is "+currentQos.toString());
 									if (bestImplementation == null || bestQos < currentQos) {
-										LOGGER.info("New best implementation found");
+										LOGGER.info("The new best implementation found");
 										bestImplementation = new BestImplementation(implementation, new ArrayList<>(resourcesUsed.values()));
 									} else {
 										//resourcesUsed.remove(resource.getId());

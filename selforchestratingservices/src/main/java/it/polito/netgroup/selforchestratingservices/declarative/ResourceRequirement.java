@@ -9,6 +9,6 @@ public interface ResourceRequirement
 {
 	Class getResourceClass();
 	boolean checkConstraint(Collection<Resource> r);
-	double removeCost(Resource r);
+	Double removeCost(Resource r);
 
 }
