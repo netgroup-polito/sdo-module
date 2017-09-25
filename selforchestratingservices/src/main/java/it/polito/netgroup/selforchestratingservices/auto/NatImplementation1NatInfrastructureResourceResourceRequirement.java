@@ -74,7 +74,7 @@ public class NatImplementation1NatInfrastructureResourceResourceRequirement impl
 		return ( set.size() >= 1 && set.size() <= hosts.size() + 1  );
 	}
 	@Override
-	public double removeCost(Resource r) {
+	public Double removeCost(Resource r) {
 		TimeoutMap<String,HostNat> active_hosts = null;
 		try
 		{
