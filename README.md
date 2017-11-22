@@ -1,6 +1,6 @@
 # sdo-module
 
-This software implements a Self-orchestrating module for the SDO architecture.
+This software implements a Self-orchestrating module for SDO architecture.
 
 Dependencies:
 
