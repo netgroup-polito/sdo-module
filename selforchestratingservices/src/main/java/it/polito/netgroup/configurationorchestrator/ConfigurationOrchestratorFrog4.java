@@ -255,6 +255,10 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 					{
 						return NatConfiguration.getFromJson(tenant_id,nffg_id,vnf_id,vnf_type,json);
 					}
+					else if ( vnf_type.equals("transcoder"))
+					{
+						return TranscoderConfiguration.getFromJson(tenant_id,nffg_id,vnf_id,vnf_type,json);
+					}
 					else
 					{
 						LOGGER.warning("Unable to find a Configuration class for VNF type: '"+vnf_type+"'");
@@ -329,6 +333,7 @@ public class ConfigurationOrchestratorFrog4 implements ConfigurationOrchestrator
 			else if (http_status == 500)
 			{
 				LOGGER.fine("HTTP STATUS 500 : trying again");
+				System.out.println(configSDN.getJson());
 				try
 				{
 					Thread.sleep(10000);

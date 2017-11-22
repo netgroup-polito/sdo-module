@@ -1,15 +1,23 @@
 package it.polito.netgroup.selforchestratingservices.declarative;
 
-import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureResource;
+import it.polito.netgroup.configurationorchestrator.ConfigurationSDN;
+import it.polito.netgroup.selforchestratingservices.declarative_new.Infrastructure;
+import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureVNF;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface Implementation
 {
+	void updateActualConfiguration(ConfigurationSDN configuration);
+
 	String getName();
-	Double getQoS(Collection<Resource> r);
 	List<ResourceRequirement> getResourceRequirement();
 
-	ResourceTemplate getTemplate(Class<? extends Resource> aClass);
+	VNFTemplate getTemplate(Class<? extends InfrastructureVNF> aClass);
+
+	InfrastructureVNF getInfrastructureVNF(Infrastructure infrastructure);
+
+	ConfigurationSDN getConfiguration(ConfigurationSDN actual_config,Integer qos);
+
+	ConfigurationSDN getActualConfiguration();
 }

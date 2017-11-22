@@ -1,12 +1,11 @@
 package it.polito.netgroup.configurationorchestrator;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,16 +21,12 @@ import it.polito.netgroup.nffg.json.IpAddressAndNetmask;
 import it.polito.netgroup.nffg.json.MacAddress;
 import it.polito.netgroup.nffg.json.VNFExtended;
 
-public class NatConfiguration implements ConfigurationSDN
+public class NatConfiguration extends AbstractConfigurationSDN
 {
-	private String tenant_id;
-	private String nffg_id;
-	private String vnf_id;
-	private String fc;
-	
-	private MacAddress lan_mac;
-	private IpAddressAndNetmask lan_ip;
-	private NatModel natConfiguration;
+	//private MacAddress lan_mac;
+	//private IpAddressAndNetmask lan_ip;
+
+	private NatModel natModel;
 	
 	public NatConfiguration(String _tenant_id, String _nffg_id, VNFExtended vnf)
 	{
@@ -40,82 +35,14 @@ public class NatConfiguration implements ConfigurationSDN
 
 	public NatConfiguration(String _tenant_id, String _nffg_id, String _vnf_id , String _fc)
 	{
-		tenant_id = _tenant_id;
-		nffg_id = _nffg_id;
-		vnf_id = _vnf_id;
-		fc = _fc;
-		
-		natConfiguration = new NatModel();
-	}
+		super(_tenant_id, _nffg_id, _vnf_id,_fc);
 
-	public void setIP(InterfaceLabel interfaceLabel, IpAddressAndNetmask nat_ip, MacAddress nat_mac) throws InvalidInterfaceLabel
-	{
-		if ( interfaceLabel.getValue().equals("User") )
-		{
-			lan_ip = nat_ip;
-			lan_mac = nat_mac;
-			
-			
-		}
-		else throw new InvalidInterfaceLabel(interfaceLabel.getValue());
-	}
+		natModel = new NatModel();
 
-	public static NatConfiguration getFromJson(String _tenant_id , String _nffg_id, String _vnf_id , String _fc , String json) throws JsonParseException, JsonMappingException, IOException
-	{
-		NatConfiguration cfg = new NatConfiguration(_tenant_id, _nffg_id, _vnf_id,_fc);
-		ObjectMapper mapper = new ObjectMapper();
-		NatModel natcfg = mapper.readValue(json, NatModel.class);
-		
-		cfg.setConfiguration(natcfg);
-		
-		return cfg;
-	}
-	
-	private void setConfiguration(NatModel _natcfg)
-	{
-		natConfiguration = _natcfg;
-	}
 
-	@JsonIgnore
-	@Override
-	public String getId()
-	{
-		return vnf_id;
-	}
+		IpAddressAndNetmask lan_ip = new IpAddressAndNetmask("192.168.10.100", "255.255.255.0");
+		MacAddress lan_mac =new MacAddress("02:01:02:03:04:05");
 
-	@JsonIgnore
-	@Override
-	public String getFunctionalCapability()
-	{
-		return fc;
-	}
-
-	@JsonIgnore
-	@Override
-	public String getVnfId()
-	{
-		return vnf_id;
-	}
-
-	@JsonIgnore
-	@Override
-	public String getNffgId()
-	{
-		return nffg_id;
-	}
-
-	@JsonIgnore
-	@Override
-	public String getTenantId()
-	{
-		return tenant_id;
-	}
-
-	@JsonIgnore
-	@Override
-	public String getJson() throws JsonProcessingException
-	{
-		//Default configuration
 		IPv4Configuration ipv4_wan = new IPv4Configuration();
 		ipv4_wan.setConfigurationType(new ConfigurationType(TYPE.dhcp));
 		IfEntry ifWAN = new IfEntry();
@@ -134,54 +61,70 @@ public class NatConfiguration implements ConfigurationSDN
 		ifLAN.setName("eth1");
 		ifLAN.setIpv4_configuration(ipv4_lan);
 		ifLAN.setManagement(true);
-		
+
 		IPv4Configuration ipv4_man = new IPv4Configuration();
 		ipv4_man.setConfigurationType(new ConfigurationType(TYPE.dhcp));
 		IfEntry ifMAN = new IfEntry();
 		ifMAN.setId("management:2");
 		ifMAN.setName("eth2");
 		ifMAN.setIpv4_configuration(ipv4_man);
-		ifWAN.setManagement(true);
+		ifMAN.setManagement(true);
 
 		List<IfEntry> ifEntryList = new ArrayList<>();
 		ifEntryList.add(ifWAN);
 		ifEntryList.add(ifLAN);
 		ifEntryList.add(ifMAN);
-		
+
 		ConfigNatInterfaces config_nat = new ConfigNatInterfaces();
 		config_nat.setIfEntry(ifEntryList);
-		natConfiguration.setConfigNatInterfaces(config_nat);
+		natModel.setConfigNatInterfaces(config_nat);
 		ConfigNatNat configNatNat = new ConfigNatNat();
 		configNatNat.setPrivateInterface("User:1");
 		configNatNat.setPublicInterface("WAN:0");
-		natConfiguration.setConfigNatNat(configNatNat);
-		
+		natModel.setConfigNatNat(configNatNat);
+
+	}
+
+	public void setIP(InterfaceLabel interfaceLabel, IpAddressAndNetmask nat_ip, MacAddress nat_mac) throws InvalidInterfaceLabel
+	{
+		if ( interfaceLabel.getValue().equals("User") )
+		{
+			natModel.setConfigNatInterfaces(new ConfigNatInterfaces());
+
+		}
+		else throw new InvalidInterfaceLabel(interfaceLabel.getValue());
+
+		throw new InvalidInterfaceLabel(interfaceLabel.getValue());
+	}
+
+	public static NatConfiguration getFromJson(String _tenant_id , String _nffg_id, String _vnf_id , String _fc , String json) throws JsonParseException, JsonMappingException, IOException
+	{
+		NatConfiguration cfg = new NatConfiguration(_tenant_id, _nffg_id, _vnf_id,_fc);
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(natConfiguration);
-	}
+		NatModel natcfg = mapper.readValue(json, NatModel.class);
 
-	public NatModel getConfiguration()
-	{
-		return natConfiguration;
-	}
-
-	@Override
-	public void setTenantId(String tenant_id)
-	{
-		this.tenant_id = tenant_id;
-	}
-
-	@Override
-	public void setNffgid(String nffg_name)
-	{
-		this.nffg_id = nffg_name;
+		cfg.setConfigurationModel(natcfg);
 		
+		return cfg;
 	}
-
-	@Override
-	public void setVnfId(String id)
+	
+	private void setConfigurationModel(NatModel _natcfg)
 	{
-		this.vnf_id = id;	
+		natModel = _natcfg;
 	}
 
+	public NatModel getConfigurationModel()
+	{
+		return natModel;
+	}
+
+	public ConfigurationSDN copy()
+	{
+		try {
+			return TranscoderConfiguration.getFromJson(getTenantId(),getNffgId(),getVnfId(),getFunctionalCapability(),getJson());
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new InvalidParameterException(e.getMessage());
+		}
+	}
 }

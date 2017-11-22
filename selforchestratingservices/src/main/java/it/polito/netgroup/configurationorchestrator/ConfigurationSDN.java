@@ -6,17 +6,24 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public interface ConfigurationSDN extends VnfForConfigurationInterface
 {
 
-	public String getVnfId();
+	String getVnfId();
 
-	public String getNffgId();
+	String getNffgId();
 
-	public String getTenantId();
-	
-	public String getJson() throws JsonProcessingException;
+	String getTenantId();
 
-	public void setTenantId(String tenant_id);
+	String getFunctionalCapability();
 
-	public void setNffgid(String nffg_name);
+	String getJson() throws JsonProcessingException;
 
-	public void setVnfId(String id);
+	void setTenantId(String tenant_id);
+
+	void setNffgid(String nffg_name);
+
+	void setVnfId(String id);
+
+	void setFunctionalCapability(String functionalCapability);
+
+	ConfigurationSDN copy();
+
 }

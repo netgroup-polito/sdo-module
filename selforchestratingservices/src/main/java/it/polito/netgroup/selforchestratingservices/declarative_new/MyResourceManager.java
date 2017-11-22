@@ -1,9 +1,8 @@
 package it.polito.netgroup.selforchestratingservices.declarative_new;
 
+import it.polito.netgroup.configurationorchestrator.ConfigurationSDN;
 import it.polito.netgroup.selforchestratingservices.declarative.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -24,10 +23,10 @@ public class MyResourceManager implements ResourceManager{
 	}
 
 	@Override
-	public void newServiceState() throws Exception {
+	public void newServiceConfiguration() throws Exception {
 
 //TODO questa funzione non esplora tutto lo spazio delle soluzioni
-		HashMap<String,Resource> resourcesUsed = new HashMap<>();
+		//HashMap<String,Resource> resourcesUsed = new HashMap<>();
 
 		LOGGER.info("Computing the new service state");
 		Infrastructure infrastructure = framework.getInfrastructure();
@@ -39,6 +38,12 @@ public class MyResourceManager implements ResourceManager{
 
 		LOGGER.info("Getting available resources");
 		List<Resource> resources = infrastructure.getResources();
+
+		System.out.println("Available resources:");
+		for(Resource r: resources)
+		{
+			System.out.println("Resource ID:"+r.getId()+" TYPE:"+r.getType().name()+" USED:"+r.isUsed());
+		}
 
 /*
 		for(Resource resource : resources)
@@ -69,79 +74,69 @@ public class MyResourceManager implements ResourceManager{
 //					}
 //			}
 
-			for (Implementation implementation : elementaryService.getImplementations())
+			ResourceSet resourceSet = new ResourceSet(resources);
+
+			qosloop:
+			for (Integer qos = 100 ; qos >= 0 ; qos--)
 			{
-				LOGGER.info("Checking the implementation '"+implementation.getName()+"' for '"+elementaryService.getName()+"'");
-
-				for (ResourceRequirement resourceRequirement : implementation.getResourceRequirement())
+				for (Implementation implementation : elementaryService.getImplementations())
 				{
-					LOGGER.info("Checking the ResourceRequirement for '"+resourceRequirement.getResourceClass().getName()+"'");
+					LOGGER.info("Checking the implementation '" + implementation.getName() + "' for '" + elementaryService.getName() + "' with QoS '"+qos+"'");
 
-					for (Resource resource : resources)
-					{
-						LOGGER.info("Checking Resource '"+resource.getClass().getName()+" with id '"+resource.getId()+"'");
+					ConfigurationSDN actual_config = implementation.getActualConfiguration();
+					ConfigurationSDN configuration = implementation.getConfiguration(actual_config,qos);
 
-						if ( resourceRequirement.getResourceClass().isInstance(resource) )
-						{
-							LOGGER.info("Checking if Resource '"+resource.getClass().getName()+" with id '"+resource.getId()+"' is used or not");
-							Resource isUsed = resourcesUsed.get(resource.getId());
+					Boolean cont= false;
+					for (ResourceRequirement resourceRequirement : implementation.getResourceRequirement()) {
+						Integer min = resourceRequirement.minimum(configuration);
+						LOGGER.info("Min "+min);
+						LOGGER.info("Free "+resourceSet.getFreeOfType(resourceRequirement.getResourceType()).size());
 
-							if ( isUsed == null )
-							{
-								LOGGER.info("Resource '"+resource.getClass().getName()+" with id '"+resource.getId()+"' is free");
-								resourcesUsed.put(resource.getId(), resource);
-
-								LOGGER.info("Checking constraint for Resource '"+resource.getClass().getName()+" with id '"+resource.getId()+"'");
-								if ( resourceRequirement.checkConstraint(resourcesUsed.values()))
-								{
-									Double bestQos = Double.NaN;
-									if (bestImplementation != null)
-									{
-										bestQos = bestImplementation.qos();
-									}
-
-									Double currentQos = implementation.getQoS(resourcesUsed.values());
-
-									LOGGER.info("The current best qos is "+bestQos.toString()+" current qos is "+currentQos.toString());
-									if (bestImplementation == null || bestQos < currentQos) {
-										LOGGER.info("The new best implementation found");
-										bestImplementation = new BestImplementation(implementation, new ArrayList<>(resourcesUsed.values()));
-									} else {
-										//resourcesUsed.remove(resource.getId());
-									}
-								}
-								else
-								{
-									LOGGER.info("Checking constraints failed");
-								}
-							}
-							else
-							{
-								LOGGER.info("Resource '"+resource.getClass().getName()+" with id '"+resource.getId()+"' is already used");
-							}
+						if ( min > resourceSet.getFreeOfType(resourceRequirement.getResourceType()).size() ) {
+							LOGGER.info("ResourceRequirement for "+resourceRequirement.getResourceType()+" is not satified.");
+							cont = true;
+							break;
 						}
-						else
-						{
-							LOGGER.info("Resource '"+resource.getClass().getName()+" with id '"+resource.getId()+"' is not valid for the ResourceRequirement");
-						}
+						resourceSet.setResourceUsed(implementation,resources,min);
+					}
+					if (cont) {
+						resourceSet.removeImplementation(implementation);
+						continue;
+					}
+
+					Double bestQos = Double.NaN;
+					if (bestImplementation != null) {
+						bestQos = bestImplementation.getQos();
+					}
+
+					Double currentQos = new Double(qos);
+
+					LOGGER.info("The current best qos is " + bestQos.toString() + " current qos is " + currentQos.toString());
+					if (bestImplementation == null ||
+							bestQos < currentQos ||
+							(bestImplementation.getQos().equals(currentQos) && bestImplementation.getResourcesUsed().size() < resourceSet.getResourcesOf(implementation).size()) //TODO migliorare
+							) {
+						LOGGER.info("New best implementation found");
+						bestImplementation = new BestImplementation(currentQos,implementation,configuration,resourceSet.getResourcesOf(implementation));
+					} else {
+						resourceSet.removeImplementation(implementation);
 					}
 				}
 
-				if ( bestImplementation == null)
+				if ( bestImplementation != null )
 				{
-					System.err.println("ERROR: unable to find a valid implementation for the elementary service '"+elementaryService.getName()+"'");
-					System.exit(1);
-				}
-				elementaryService.setCurrentImplementation(bestImplementation.getImplementation());
-
-				resourcesUsed.clear();
-				for(Resource resource : bestImplementation.getResourcesUsed())
-				{
-					LOGGER.info("Setting the resource with id '"+resource.getId()+"' used by the elementary service '"+elementaryService.getName()+"'");
-					infrastructure.useResource(resource,elementaryService);
-					resourcesUsed.put(resource.getId(),resource);
+					break;
 				}
 			}
+			if ( bestImplementation == null)
+			{
+				System.err.println("ERROR: unable to find a valid implementation for the elementary service '"+elementaryService.getName()+"'");
+				System.exit(1);
+			}
+			elementaryService.setCurrentImplementation(bestImplementation.getImplementation());
+
+			LOGGER.info("Setting the resources used by the elementary service '"+elementaryService.getName()+"'");
+			infrastructure.useInfrastructureVNF(bestImplementation.getImplementation(),bestImplementation.getConfiguration(),bestImplementation.getResourcesUsed(),elementaryService);
 		}
 		LOGGER.info("Committing changes to infrastructure");
 		infrastructure.commit();

@@ -1,5 +1,6 @@
 package it.polito.netgroup.selforchestratingservices.declarative_new;
 
+import it.polito.netgroup.configurationorchestrator.ConfigurationSDN;
 import it.polito.netgroup.selforchestratingservices.declarative.Implementation;
 import it.polito.netgroup.selforchestratingservices.declarative.Resource;
 
@@ -11,16 +12,20 @@ public class BestImplementation {
 
 	Implementation implementation;
 	List<Resource> resources;
+	Double _qos;
+	ConfigurationSDN configuration;
 
-	public BestImplementation(Implementation _implementation, List<Resource> _resources) {
+	public BestImplementation(Double __qos,Implementation _implementation, ConfigurationSDN _cfg, List<Resource> _resources) {
 		implementation = _implementation;
 		resources = new ArrayList<>(_resources);
+		_qos = __qos;
+		configuration = _cfg;
 	}
 
 
 
-	public Double qos() {
-		return implementation.getQoS(resources);
+	public Double getQos() {
+		return _qos;
 	}
 
 	public Implementation getImplementation() {
@@ -29,5 +34,9 @@ public class BestImplementation {
 
 	public List<Resource> getResourcesUsed() {
 		return resources;
+	}
+
+	public ConfigurationSDN getConfiguration() {
+		return configuration;
 	}
 }

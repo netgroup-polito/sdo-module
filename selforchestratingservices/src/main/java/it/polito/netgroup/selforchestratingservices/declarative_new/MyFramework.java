@@ -4,7 +4,6 @@ import it.polito.netgroup.selforchestratingservices.declarative.*;
 import it.polito.netgroup.selforchestratingservices.declarative.dirtychecker.DirtyChecker;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -62,18 +61,23 @@ public class MyFramework implements Framework {
 	@Override
 	public void mainLoop() {
 		while (true) {
-			Boolean masterSomeChange = false;
-			Boolean someChanges;
+			Boolean rebuildServiceConfiguration = false;
+			Boolean changesInsideLoop;
+
+			if ( infrastructure.checkEvents() )
+			{
+				rebuildServiceConfiguration=true; //Se ci sono stati eventi nell'infrastruttura, ricacolo lo stato del servizio
+			}
 
 			do {
-				someChanges = false;
+				changesInsideLoop = false;
 				for (DirtyChecker dc : dirtyCheckers) {
 					LOGGER.info("Check DirtyChecker " + dc.getName());
 
 					try {
 						if (dc.check()) {
-							someChanges = true;
-							masterSomeChange = true;
+							changesInsideLoop = true;
+							rebuildServiceConfiguration = true;
 							LOGGER.info("Some change are detected inside the DirtyChecker " + dc.getName());
 						}
 					} catch (Exception e) {
@@ -82,13 +86,13 @@ public class MyFramework implements Framework {
 					}
 
 				}
-			}while(someChanges);
+			}while(changesInsideLoop);
 
-			if (masterSomeChange)
+			if (rebuildServiceConfiguration)
 			{
 				try {
-					LOGGER.info("Computing the new service state");
-					resourceManager.newServiceState();
+					LOGGER.info("Computing the new service configuration");
+					resourceManager.newServiceConfiguration();
 				}
 				catch(Exception e)
 				{
@@ -96,6 +100,11 @@ public class MyFramework implements Framework {
 					e.printStackTrace();
 					System.exit(1);
 				}
+			}
+
+			for(ElementaryService es : selfOrchestrator.getElementaryServices())
+			{
+				infrastructure.updateImplementationStatus(es.getCurrentImplementation());
 			}
 
 			LOGGER.info("Going to sleep ");

@@ -1,0 +1,383 @@
+{
+  "forwarding-graph": {
+    "id": "1",
+    "VNFs": [
+      {
+        "ports": [
+          {
+            "id": "inout:0",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 31
+            }
+          }
+        ],
+        "vnf_template": "dhcpserver",
+        "id": "DHCPLAN",
+        "name": "DHCPLAN",
+        "functional-capability": "dhcpserverlan",
+        "gui-position": {
+          "x": 31,
+          "y": 335
+        }
+      },
+      {
+        "ports": [
+          {
+            "id": "inout:0",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 28
+            }
+          }
+        ],
+        "vnf_template": "dhcpserverman",
+        "id": "DHCPMAN",
+        "name": "DHCPMAN",
+        "functional-capability": "dhcpserverman",
+        "gui-position": {
+          "x": 30,
+          "y": 64
+        }
+      },
+      {
+        "ports": [
+          {
+            "id": "port11:10",
+            "name": "",
+            "gui-position": {
+              "x": 0,
+              "y": 31
+            }
+          },
+          {
+            "id": "port10:9",
+            "name": "",
+            "gui-position": {
+              "x": 75,
+              "y": 0
+            }
+          },
+          {
+            "id": "port9:8",
+            "name": "",
+            "gui-position": {
+              "x": 75,
+              "y": 60
+            }
+          },
+          {
+            "id": "port8:7",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 23
+            }
+          },
+          {
+            "id": "port7:6",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 39
+            }
+          },
+          {
+            "id": "port6:5",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 48
+            }
+          },
+          {
+            "id": "port5:4",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 50
+            }
+          },
+          {
+            "id": "port4:3",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 43
+            }
+          },
+          {
+            "id": "port3:2",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 49
+            }
+          },
+          {
+            "id": "port2:1",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 34
+            }
+          },
+          {
+            "id": "port1:0",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 22
+            }
+          }
+        ],
+        "vnf_template": "switch",
+        "id": "SWMAN",
+        "name": "SWMAN",
+        "functional-capability": "switch",
+        "gui-position": {
+          "x": 282,
+          "y": 63
+        }
+      },
+      {
+        "ports": [
+          {
+            "id": "port11:10",
+            "name": "",
+            "gui-position": {
+              "x": 0,
+              "y": 30
+            }
+          },
+          {
+            "id": "port10:9",
+            "name": "",
+            "gui-position": {
+              "x": 150,
+              "y": 30
+            }
+          },
+          {
+            "id": "port9:8",
+            "name": "",
+            "gui-position": {
+              "x": 73,
+              "y": 0
+            }
+          },
+          {
+            "id": "port8:7",
+            "name": "",
+            "gui-position": {
+              "x": 47,
+              "y": 60
+            }
+          },
+          {
+            "id": "port7:6",
+            "name": "",
+            "gui-position": {
+              "x": 61,
+              "y": 60
+            }
+          },
+          {
+            "id": "port6:5",
+            "name": "",
+            "gui-position": {
+              "x": 75,
+              "y": 60
+            }
+          },
+          {
+            "id": "port5:4",
+            "name": "",
+            "gui-position": {
+              "x": 88,
+              "y": 60
+            }
+          },
+          {
+            "id": "port4:3",
+            "name": "",
+            "gui-position": {
+              "x": 102,
+              "y": 60
+            }
+          },
+          {
+            "id": "port3:2",
+            "name": "",
+            "gui-position": {
+              "x": 115,
+              "y": 60
+            }
+          },
+          {
+            "id": "port2:1",
+            "name": "",
+            "gui-position": {
+              "x": 129,
+              "y": 60
+            }
+          },
+          {
+            "id": "port1:0",
+            "name": "",
+            "gui-position": {
+              "x": 143,
+              "y": 60
+            }
+          }
+        ],
+        "vnf_template": "switch",
+        "id": "SWLAN",
+        "name": "SWLAN",
+        "functional-capability": "switch",
+        "gui-position": {
+          "x": 280,
+          "y": 337
+        }
+      },
+      {
+        "id": "trsmtt",
+        "name": "trsmtt",
+        "vnf_template": "transmitter",
+        "ports": [
+          {
+            "id": "inout:0",
+            "gui-position": {
+              "x": 0,
+              "y": 30
+            }
+          }
+        ],
+        "gui-position": {
+          "x": 526,
+          "y": 336
+        }
+      }
+    ],
+    "big-switch": {
+      "flow-rules": [
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:DHCPMAN:inout:0"
+          },
+          "id": "DHCP_SWMAN",
+          "actions": [
+            {
+              "output_to_port": "vnf:SWMAN:port11:10"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:SWMAN:port11:10"
+          },
+          "id": "SWMAN_DHCP",
+          "actions": [
+            {
+              "output_to_port": "vnf:DHCPMAN:inout:0"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:DHCPLAN:inout:0"
+          },
+          "id": "DHCP_SWLAN",
+          "actions": [
+            {
+              "output_to_port": "vnf:SWLAN:port11:10"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:SWLAN:port11:10"
+          },
+          "id": "SWLAN_DHCP",
+          "actions": [
+            {
+              "output_to_port": "vnf:DHCPLAN:inout:0"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:SWMAN:port10:9"
+          },
+          "id": "SWMAN_ENDPOINT",
+          "actions": [
+            {
+              "output_to_port": "endpoint:MANAGEMENT_ENDPOINT"
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "match": {
+            "port_in": "endpoint:MANAGEMENT_ENDPOINT"
+          },
+          "id": "ENDPOINT_SWMAN",
+          "actions": [
+            {
+              "output_to_port": "vnf:SWMAN:port10:9"
+            }
+          ]
+        },
+        {
+          "id": "000001",
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:trsmtt:inout:0"
+          },
+          "actions": [
+            {
+              "output_to_port": "vnf:SWLAN:port10:9"
+            }
+          ],
+          "description": "trsmtt2Switchlan"
+        },
+        {
+          "id": "000002",
+          "priority": 1,
+          "match": {
+            "port_in": "vnf:SWLAN:port10:9"
+          },
+          "actions": [
+            {
+              "output_to_port": "vnf:trsmtt:inout:0"
+            }
+          ],
+          "description": "SwitchLan2trsmtt"
+        }
+      ]
+    },
+    "name": "test_nffg_nat",
+    "end-points": [
+      {
+        "type": "host-stack",
+        "id": "MANAGEMENT_ENDPOINT",
+        "name": "MANAGEMENT_ENDPOINT",
+        "host-stack": {
+          "configuration": "static",
+          "IPv4": "192.168.40.1/24"
+        },
+        "gui-position": {
+          "x": 356,
+          "y": 1
+        }
+      }
+    ]
+  }
+}

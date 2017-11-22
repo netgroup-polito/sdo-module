@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import it.polito.netgroup.nffg.json.VNF;
+import it.polito.netgroup.nffg.json.VNFExtended;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -74,33 +76,30 @@ public class InfrastructureOrchestratorUniversalNode implements InfrastructureOr
 	public void addNFFG(NF_FGExtended nffg) throws JsonProcessingException, InfrastructureOrchestratorHTTPException,
 			InfrastructureOrchestratorAuthenticationException, InfrastructureOrchestratorNotAuthenticatedException
 	{
-		String nffg_json = nffg.getJson();
 		try
 		{
-			_addNFFG(nffg.getId(),nffg_json);
+			_addNFFG(nffg);
 		} catch (InfrastructureOrchestratorNotAuthenticatedException e)
 		{
 			authenticate();
-			_addNFFG(nffg.getId(),nffg_json);
-		}
-	}
-	
-	public void addNFFG(String id,String nffg_json) throws JsonProcessingException, InfrastructureOrchestratorHTTPException,
-	InfrastructureOrchestratorAuthenticationException, InfrastructureOrchestratorNotAuthenticatedException
-	{
-		try
-		{
-			_addNFFG(id,nffg_json);
-		} catch (InfrastructureOrchestratorNotAuthenticatedException e)
-		{
-			authenticate();
-			_addNFFG(id,nffg_json);
+			_addNFFG(nffg);
 		}
 	}
 
-	private void _addNFFG(String id, String nffg_json) throws InfrastructureOrchestratorNotAuthenticatedException,
+	private void _addNFFG(NF_FGExtended nffg) throws InfrastructureOrchestratorNotAuthenticatedException,
 			InfrastructureOrchestratorHTTPException, JsonProcessingException
 	{
+
+		for(VNF vnf : nffg.getForwardingGraph().getVNFs())
+		{
+			if ( vnf.getId().length() >= 10)
+			{
+				throw new InfrastructureOrchestratorHTTPException(vnf.getId()+" too much long (>=10)");
+			}
+		}
+		String nffg_json = nffg.getJson();
+		String id = nffg.getId();
+
 		RequestConfig config = RequestConfig.custom().setConnectionRequestTimeout(timeout_ms)
 				.setConnectTimeout(timeout_ms).setSocketTimeout(timeout_ms).build();
 

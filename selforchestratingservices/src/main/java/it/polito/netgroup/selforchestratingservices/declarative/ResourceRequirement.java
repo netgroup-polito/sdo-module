@@ -4,11 +4,13 @@ import java.util.Collection;
 import java.util.List;
 
 import it.polito.netgroup.configurationorchestrator.ConfigurationSDN;
+import it.polito.netgroup.selforchestratingservices.declarative.infrastructureresources.TranscoderInfrastructureVNF;
+import it.polito.netgroup.selforchestratingservices.declarative_new.InfrastructureVNF;
+import it.polito.netgroup.selforchestratingservices.declarative_new.ResourceSet;
 
 public interface ResourceRequirement
 {
-	Class getResourceClass();
-	boolean checkConstraint(Collection<Resource> r);
-	Double removeCost(Resource r);
+	ResourceType getResourceType();
 
+	Integer minimum(ConfigurationSDN configuration);
 }

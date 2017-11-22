@@ -19,7 +19,7 @@ public class NatInfrastructureResourceResourceTemplate implements ResourceTempla
 	@Override
 	public String getType()
 	{
-		return "NatInfrastructureResource";
+		return "NatInfrastructureVNF";
 	}
 
 	@Override

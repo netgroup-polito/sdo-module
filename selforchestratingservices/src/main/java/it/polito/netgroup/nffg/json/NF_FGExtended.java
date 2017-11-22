@@ -356,4 +356,12 @@ public class NF_FGExtended extends NF_FG
 			}
 		}		
 	}
+
+	public void setName(String name) {
+		getForwardingGraph().setName(name);
+	}
+
+	public void setId(String name) {
+		getForwardingGraph().setId(name);
+	}
 }

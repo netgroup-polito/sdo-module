@@ -23,9 +23,10 @@ import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorU
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorAuthenticationException;
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorHTTPException;
 import it.polito.netgroup.infrastructureOrchestrator.InfrastructureOrchestratorNotAuthenticatedException;
+import it.polito.netgroup.nffg.json.NF_FGExtended;
 import it.polito.netgroup.selforchestratingservices.auto.MySelfOrchestrator;
-import it.polito.netgroup.selforchestratingservices.declarative.Infrastructure;
-import it.polito.netgroup.selforchestratingservices.declarative.InfrastructureImplementation;
+import it.polito.netgroup.selforchestratingservices.declarative_new.Infrastructure;
+import it.polito.netgroup.selforchestratingservices.declarative_new.MyInfrastructure;
 import it.polito.netgroup.selforchestratingservices.declarative.SelfOrchestrator;
 import it.polito.netgroup.selforchestratingservices.declarative_new.Framework;
 import it.polito.netgroup.selforchestratingservices.declarative_new.MyFramework;
@@ -39,9 +40,6 @@ import it.polito.netgroup.selforchestratingservices.declarative_new.ResourceMana
  */
 public class App
 {
-
-
-	
 	public static void main(String[] args)
 	{
 
@@ -58,6 +56,12 @@ public class App
 		String configuration_url = "http://127.0.0.1:8082";
 		String configuration_username = "admin";
 		String configuration_password = "admin";
+
+		String resourceManager_url = "http://127.0.0.1:8079";
+		String resourceManager_username = "admin";
+		String resourceManager_password = "admin";
+
+		String tenant_id = "2";
 
 		int timeout_ms = 240000;
 
@@ -112,9 +116,6 @@ public class App
 		
 		//SelfOrchestratorImperativo soi = new SelfOrchestratorImperativo();
 		//soi.run();
-		
-		String tenant_id = "2";
-		String nffg_name="test_nffg_nat";
 
 		DatastoreClient datastore = new DatastoreClient(datastore_username, datastore_password, datastore_url, timeout_ms);
 		orchestrator = new InfrastructureOrchestratorUniversalNode(controller_username, controller_password, controller_url,
@@ -132,10 +133,15 @@ public class App
 
 		//Setting default NFFG
 
-		String nffg_json="";
+		NF_FGExtended nffg=null;
 		try
 		{
-			nffg_json = new String(Files.readAllBytes(Paths.get(mySelfOrchestrator.getInitNFFGFilename())));
+			String nffg_json = new String(Files.readAllBytes(Paths.get(mySelfOrchestrator.getInitNFFGFilename())));
+			nffg = NF_FGExtended.getFromJson(nffg_json);
+			nffg.setName(mySelfOrchestrator.getName());
+			nffg.setId(mySelfOrchestrator.getName());
+
+			nffg_json = nffg.getJson();
 		} catch (IOException e)
 		{
 			e.printStackTrace();
@@ -143,25 +149,27 @@ public class App
 		}
 		
 		try {
+			Infrastructure myInfrastructure = new MyInfrastructure(orchestrator,
+					datastore,
+					configurationService,
+					resourceManager_url,
+					mySelfOrchestrator.getName(),
+					tenant_id);
+
 			try {
-				orchestrator.addNFFG(nffg_name, nffg_json);
+				orchestrator.addNFFG(nffg);
 			} catch (JsonProcessingException | InfrastructureOrchestratorHTTPException
 					| InfrastructureOrchestratorAuthenticationException
 					| InfrastructureOrchestratorNotAuthenticatedException e) {
+				e.printStackTrace();
 				System.exit(1);
 			}
-
-			Infrastructure myInfrastructure = new InfrastructureImplementation(orchestrator,
-					datastore,
-					configurationService,
-					nffg_name,
-					tenant_id);
 
 			myFramework.setResourceManager(myResourceManager);
 			myFramework.setSelfOrchestrator(mySelfOrchestrator);
 			myFramework.setInfrastructure(myInfrastructure);
 
-			myResourceManager.newServiceState();
+			myResourceManager.newServiceConfiguration();
 			myFramework.mainLoop();
 		}
 		catch(Exception ex)

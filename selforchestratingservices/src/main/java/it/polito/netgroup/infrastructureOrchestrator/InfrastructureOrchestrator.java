@@ -17,10 +17,5 @@ public interface InfrastructureOrchestrator
 	
 	public void addNFFG(NF_FGExtended nffg) throws JsonProcessingException, InfrastructureOrchestratorHTTPException,
 			InfrastructureOrchestratorAuthenticationException, InfrastructureOrchestratorNotAuthenticatedException;
-		
-	public void addNFFG(String id,String nffg_json) throws JsonProcessingException, InfrastructureOrchestratorHTTPException,
-	InfrastructureOrchestratorAuthenticationException, InfrastructureOrchestratorNotAuthenticatedException;
-	
 
-	
 }
