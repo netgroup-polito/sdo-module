@@ -1,0 +1,49 @@
+{
+    "CPUrequirements": {
+        "platformType": "x86",
+        "socket": [
+            {
+                "coreNumbers": 1
+            }
+        ]
+    },
+    "name": "nat",
+    "functional-capability": "nat",
+    "memory-size": 512,
+    "vnf-type": "virtual-machine-kvm",
+    "uri-image": "http://selforch.name29.net:8081/v2/nf_image/nat",
+    "uri-image-type":"remote-file",
+    "ports": [
+        {
+            "name": "eth",
+            "min": "1",
+            "label": "management",
+            "ipv4-config": "dhcp",
+            "position": "2-2",
+            "technology": "vhost",
+            "ipv6-config": "none"
+        },
+        {
+            "name": "eth",
+            "min": "1",
+            "label": "User",
+            "ipv4-config": "static",
+            "position": "1-1",
+            "technology": "vhost",
+            "ipv6-config": "none"
+        },
+        {
+            "name": "eth",
+            "min": "1",
+            "label": "WAN",
+            "ipv4-config": "dhcp",
+            "position": "0-0",
+            "technology": "vhost",
+            "ipv6-config": "none"
+        }
+    ],
+    "swap-disk-size": 0,
+    "expandable": false,
+    "ephemeral-file-system-size": 0,
+    "root-file-system-size": 40
+}

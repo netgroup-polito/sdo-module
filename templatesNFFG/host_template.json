@@ -1,0 +1,40 @@
+{
+	"name": "host_vnf",
+	"expandable": false,
+	"vnf-type": "virtual-machine-kvm",
+	"memory-size": 512,
+	"uri-image":"http://selforch.name29.net:8081/v2/nf_image/host_VNF",
+	"uri-image-type": "remote-file",
+	"root-file-system-size": 40,
+	"functional-capability" : "host",
+	"ephemeral-file-system-size": 0,
+	"swap-disk-size": 0,
+	"CPUrequirements": {
+		"platformType": "x86",
+		"socket": [
+			{
+				"coreNumbers": 1
+			}
+		]
+	},
+	"ports": [
+		{
+			"position": "1-1",
+			"label": "inout",
+			"min": "1",
+			"ipv4-config": "static",
+      			"ipv6-config": "none",
+      			"name": "eth",
+			"technology":"vhost"
+		},
+		{
+			"position": "2-2",
+			"label": "management",
+			"min": "1",
+			"ipv4-config": "static",
+      			"ipv6-config": "none",
+      			"name": "eth",
+			"technology":"vhost"
+		}	
+	]
+}
