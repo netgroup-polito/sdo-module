@@ -1,0 +1,260 @@
+diff --git a/config_orch_core/controller/main_controller.py b/config_orch_core/controller/main_controller.py
+index c3ab931..4c80cac 100644
+--- a/config_orch_core/controller/main_controller.py
++++ b/config_orch_core/controller/main_controller.py
+@@ -6,6 +6,7 @@ from config_orch_core.exception.functional_capability_not_found import Functiona
+ from config_orch_core.exception.vnf_not_started import VnfNotStarted
+ from config_orch_core.exception.management_address_not_found import ManagementAddressNotFound
+ from requests.exceptions import HTTPError
++import logging
+ 
+ class MainController():
+ 
+@@ -36,18 +37,23 @@ class MainController():
+         try:
+             return self.datadiskService.get_file(tenant_id, graph_id, vnf_id, filename)
+         except FileNotFound as err:
++            logging.error(err)
+             raise err
+         except Exception as err:
++            logging.error(err)
+             raise err
+ 
+     def retrieve_file_default(self, functional_capability, filename):
+         try:
+             return self.datadiskService.get_file_default(functional_capability, filename)
+         except FunctionalCapabilityNotFound as err:
++            logging.error(err)
+             raise err
+         except FileNotFound as err:
++            logging.error(err)
+             raise err
+         except Exception as err:
++            logging.error(err)
+             raise err
+ 
+     def get_config(self, tenant_id, graph_id, vnf_id, url):
+@@ -72,6 +78,7 @@ class MainController():
+             raise ex
+ 
+     def put_config(self, tenant_id, graph_id, vnf_id, url, data):
++        logging.debug("Put config a %s/%s/%s  : %s" %(tenant_id,graph_id,vnf_id,data))
+         if not self.vnfService.is_vnf_started(tenant_id, graph_id, vnf_id):
+             raise VnfNotStarted("Vnf is not started")
+         address = self.vnfService.get_management_address(tenant_id, graph_id, vnf_id)
+diff --git a/config_orch_core/controller/message_bus_controller.py b/config_orch_core/controller/message_bus_controller.py
+index a2c0531..ce99ffe 100644
+--- a/config_orch_core/controller/message_bus_controller.py
++++ b/config_orch_core/controller/message_bus_controller.py
+@@ -1,11 +1,11 @@
+ import json
+-import logging
+ from threading import Event
+ 
+ from config_orch_core.config import Configuration
+ from config_orch_core.dd_client import DDclient
+ from config_orch_core.service.vnf_service import VnfService
+ 
++import logging
+ 
+ class MessageBusController():
+ 
+@@ -91,11 +91,16 @@ class MessageBusController():
+         try:
+             if self.vnfService.is_vnf_started(tenant_id, graph_id, vnf_id):
+                 address = self.vnfService.get_management_address(tenant_id, graph_id, vnf_id)
+-                if address is None:
+-                    self.vnfService.save_management_address(tenant_id, graph_id, vnf_id, msg)
+-                    logging.debug("Saved management address: " + msg + " of: " + tenant_id+'.'+graph_id+'.'+vnf_id )
++#                if address is None:
++#                    self.vnfService.save_management_address(tenant_id, graph_id, vnf_id, msg)
++#                    logging.debug("Saved management address: " + msg + " of: " + tenant_id+'.'+graph_id+'.'+vnf_id )
++                self.vnfService.save_management_address(tenant_id, graph_id, vnf_id, msg)
++                logging.debug("Saved management address: " + msg + " of: " + tenant_id+'.'+graph_id+'.'+vnf_id )
+             else:
+                 logging.error("Recevied a management address from a vnf not known:")
+                 logging.error("Address: " + topic[1] + " From: tenant_id: " + tenant_id + ", graph_id: " + graph_id + ", vnf_id: " + vnf_id)
++        except Exception as err:
++            print(err)
++            logging.error(err)
+         except IOError as err:
+-            logging.error(err)
+\ No newline at end of file
++            logging.error(err)
+diff --git a/config_orch_core/repository/datadisk_repo.py b/config_orch_core/repository/datadisk_repo.py
+index 8dd09d2..642a74d 100644
+--- a/config_orch_core/repository/datadisk_repo.py
++++ b/config_orch_core/repository/datadisk_repo.py
+@@ -7,7 +7,7 @@ local_db_path = "local_database"
+ class DatadiskRepo():
+ 
+     def get_file_list(self, functional_capability):
+-        supported_functional_capabilities = ['nat', 'firewall', 'dhcp']
++        supported_functional_capabilities = ['nat', 'firewall', 'dhcp', 'transcoder']
+         if functional_capability not in supported_functional_capabilities:
+             raise FunctionalCapabilityNotFound("Functional capability " + functional_capability + " unsupported")
+         else:
+@@ -21,9 +21,11 @@ class DatadiskRepo():
+ 
+ 
+     def get_initial_configuration_path(self, tenant_id, graph_id, vnf_id):
++#        return local_db_path+'/metadata/nat_initial_config.json'
+         raise FileNotFound("initial_configuration.json not found for: " + tenant_id +'/'+ graph_id +'/'+ vnf_id)
+ 
+     def get_template_path(self, tenant_id, graph_id, vnf_id):
++#        return local_db_path+'/metadata/nat_template.json'
+         raise FileNotFound("templates.json not found for: " + tenant_id + '/' + graph_id + '/' + vnf_id)
+ 
+     def get_metadata_path(self, tenant_id, graph_id, vnf_id, broker_address):
+@@ -35,7 +37,7 @@ class DatadiskRepo():
+         file.write('"tenant-id": "' + tenant_id + '",\n')
+         file.write('"graph-id": "' + graph_id + '",\n')
+         file.write('"vnf-id": "' + vnf_id + '",\n')
+-        file.write('"broker-url": "tcp://10.0.0.2:5555"')
++        file.write('"broker-url": "tcp://192.168.40.1:5555"')
+         #file.write('"broker-url: "' + broker_address)
+         file.write("}")
+ 
+@@ -57,6 +59,9 @@ class DatadiskRepo():
+ 
+         elif (functional_capability == "nat"):
+             return local_db_path+"/initial_configuration/NAT_initial_configuration.json"
++
++        elif (functional_capability == "transcoder"):
++            return local_db_path+"/initial_configuration/TRANSCODER_initial_configuration.json"
+         else:
+             raise FunctionalCapabilityNotFound("Functional capability " + functional_capability + " unknown")
+ 
+@@ -70,5 +75,8 @@ class DatadiskRepo():
+ 
+         elif (functional_capability == "nat"):
+             return local_db_path+"/templates/NAT_template.json"
++
++        elif (functional_capability == "transcoder"):
++            return local_db_path+"/templates/TRANSCODER_template.json"
+         else:
+-            raise FunctionalCapabilityNotFound("Functional capability " + functional_capability + " unknown")
+\ No newline at end of file
++            raise FunctionalCapabilityNotFound("Functional capability " + functional_capability + " unknown")
+diff --git a/config_orch_core/repository/vnf_repo.py b/config_orch_core/repository/vnf_repo.py
+index a240314..52ff085 100644
+--- a/config_orch_core/repository/vnf_repo.py
++++ b/config_orch_core/repository/vnf_repo.py
+@@ -1,6 +1,6 @@
+ from config_orch_core.model.vnf import VNF
+ import fileinput
+-
++import logging
+ database = "my_db.txt"
+ 
+ class VnfRepo():
+@@ -49,11 +49,17 @@ class VnfRepo():
+ 
+     def save_management_address(self, vnf, address):
+         try:
++            old_management = self.get_management_address(vnf)
+             for line in fileinput.input(database, inplace=1):
+-                old_row = vnf.tenant_id+':'+vnf.graph_id+':'+vnf.vnf_id
++                if ( old_management is None ):
++                    old_row = vnf.tenant_id+':'+vnf.graph_id+':'+vnf.vnf_id
++                else:
++                    old_row = vnf.tenant_id+':'+vnf.graph_id+':'+vnf.vnf_id+'#'+old_management
+                 new_row = vnf.tenant_id+':'+vnf.graph_id+':'+vnf.vnf_id+'#'+address
+                 print(line.replace(old_row, new_row))
+-        except Exception:
++        except Exception as e:
++            logging.error("Error during update of management address")
++            logging.error(e)
+             raise Exception
+ 
+     def get_management_address(self, vnf):
+diff --git a/config_orch_core/rest_api/resources/config.py b/config_orch_core/rest_api/resources/config.py
+index f1dd47f..50e15bc 100644
+--- a/config_orch_core/rest_api/resources/config.py
++++ b/config_orch_core/rest_api/resources/config.py
+@@ -61,6 +61,7 @@ class Configuration(Resource):
+             url = ''
+         mainController = MainController()
+         try:
++            logging.debug("Dati %s/%s/%s : %s" % (tenant_id,graph_id,vnf_id,request.data.decode()))
+             return mainController.put_config(tenant_id, graph_id, vnf_id, url, request.data.decode())
+ 
+         except VnfNotStarted as err:
+@@ -86,6 +87,7 @@ class FileByFunctionalCapability(Resource):
+                 return Response(json_data, status=200, mimetype="application/json")
+             else:
+                 filepath = mainController.retrieve_file_default(functional_capability, filename)
++                print(filepath)
+                 return send_from_directory('', filepath)
+ 
+         except FunctionalCapabilityNotFound as err:
+@@ -104,11 +106,14 @@ class FileByTriple(Resource):
+         mainController = MainController()
+         try:
+             filepath = mainController.retrieve_file(tenant_id, graph_id, vnf_id, filename)
++            logging.debug("Request: %s/%s/%s/%s -> %s" % ( tenant_id, graph_id, vnf_id, filename , filepath) )
+             return send_from_directory('', filepath)
+ 
+         except FileNotFound as err:
++            logging.error(err)
+             return Response(json.dumps(err.get_mess()), status=404, mimetype="application/json")
+         except Exception as err:
++            logging.error(err)
+             return Response(json.dumps(str(err)), status=500, mimetype="application/json")
+ 
+ 
+diff --git a/config_orch_core/service/configuration_service.py b/config_orch_core/service/configuration_service.py
+index 2f9f822..b1d9e71 100644
+--- a/config_orch_core/service/configuration_service.py
++++ b/config_orch_core/service/configuration_service.py
+@@ -18,6 +18,7 @@ class ConfigurationService():
+     def post(self, url, data):
+         headers = {'Content-type': 'application/json'}
+         try:
++            logging.debug("Invio a %s questi dati %s" %(url,data))
+             resp = requests.post(url, data=data, headers=headers)
+             resp.raise_for_status()
+             return resp.text
+@@ -29,6 +30,7 @@ class ConfigurationService():
+     def put(self, url, data):
+         headers = {'Content-type': 'application/json'}
+         try:
++            logging.debug("Invio a %s questi dati %s" %(url,data))
+             resp = requests.put(url, data=data, headers=headers)
+             resp.raise_for_status()
+             return resp.text
+@@ -46,4 +48,4 @@ class ConfigurationService():
+         except HTTPError as err:
+             raise err
+         except Exception as ex:
+-            raise ex
+\ No newline at end of file
++            raise ex
+diff --git a/config_orch_core/service/datadisk_service.py b/config_orch_core/service/datadisk_service.py
+index 5f162ec..8e85ead 100644
+--- a/config_orch_core/service/datadisk_service.py
++++ b/config_orch_core/service/datadisk_service.py
+@@ -2,6 +2,7 @@ from config_orch_core.config import Configuration
+ from config_orch_core.repository.datadisk_repo import DatadiskRepo
+ from config_orch_core.exception.file_not_found import FileNotFound
+ from config_orch_core.exception.functional_capability_not_found import FunctionalCapabilityNotFound
++import logging
+ 
+ class DatadiskService():
+ 
+@@ -34,6 +35,7 @@ class DatadiskService():
+                 raise FileNotFound("File: " + filename + " not found")
+ 
+         except FileNotFound as err:
++            logging.error("Errore %s" % err)
+             raise err
+ 
+     def get_file_default(self, functional_capability, filename):
+@@ -49,4 +51,5 @@ class DatadiskService():
+                 raise FileNotFound("File: " + filename + " not found")
+ 
+         except FunctionalCapabilityNotFound as err:
+-            raise err
+\ No newline at end of file
++            logging.error("Errore %s" % err)
++            raise err

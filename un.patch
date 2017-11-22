@@ -1,0 +1,100 @@
+diff --git a/orchestrator/compute_controller/plugins/kvm-libvirt/libvirt.cc b/orchestrator/compute_controller/plugins/kvm-libvirt/libvirt.cc
+index 132e1105..077fef35 100644
+--- a/orchestrator/compute_controller/plugins/kvm-libvirt/libvirt.cc
++++ b/orchestrator/compute_controller/plugins/kvm-libvirt/libvirt.cc
+@@ -339,7 +339,15 @@ bool Libvirt::startNF(StartNFIn sni)
+ 	string copy_on_write_disk = createImgDisk(uri_image, Configuration::instance()->getVnfImagesPath(), domain_name);
+ 	if(copy_on_write_disk.length() <= 0 )
+ 	{
+-		ULOG_DBG_INFO("An error occured during the copy-on-write image disk creation");
++		ULOG_ERR("An error occured during the copy-on-write image disk creation");
++		return false;
++	}
++
++	bool retVal = createDatadisk("http://localhost:8082","admin","admin", temp->getCapability(),
++                                	"2", "test_nffg_nat", nf_name,copy_on_write_disk); //FIXME: Set the correct value for tenant_id and graph_id
++	if(!retVal)
++	{
++		ULOG_ERR("An error occured during the creation of the datadisk");
+ 		return false;
+ 	}
+ 
+@@ -611,6 +619,40 @@ bool Libvirt::stopNF(StopNFIn sni)
+ 	return true;
+ }
+ 
++
++bool Libvirt::createDatadisk(string config_server_url , string config_user , string config_password , string functional_capabilities,
++				string tenant_id, string graph_id, string vnf_id, string qcow2_disk_path)
++{
++	stringstream command;
++	command << "./compute_controller/plugins/kvm-libvirt/scripts/add_datadisk_files.sh ";
++	command << config_server_url << " " << config_user << " " << config_password << " " << functional_capabilities << " ";
++	command << tenant_id << " " << graph_id << " " << vnf_id << " " << qcow2_disk_path;
++
++	int retVal = system(command.str().c_str());
++	ULOG_DBG_INFO(" %s Retval is %d",vnf_id.c_str(),retVal);
++
++	if (retVal == -1 )
++	{
++		ULOG_DBG_INFO(" %s System failed.",vnf_id.c_str());
++		return false;
++	}
++
++	retVal = WEXITSTATUS(retVal);
++	ULOG_DBG_INFO(" %s Retval is %d",vnf_id.c_str(),retVal);
++	//Datadisk is not needed
++	if( retVal == 1)
++	{
++		ULOG_DBG_INFO(" %s Datadisk not needed",vnf_id.c_str());
++		return true;
++	}
++
++	if(retVal != 0)
++	{
++		ULOG_DBG_INFO(" %s Error during the creation of the datadisk",vnf_id.c_str());
++		return false;
++	}
++	return true;
++}
+ string Libvirt::createImgDisk(string imgBasePath, string folder, string domainName)
+ {
+ 	ULOG_DBG_INFO("A new copy-on-write image from the base image is going to be created ...");
+diff --git a/orchestrator/compute_controller/plugins/kvm-libvirt/libvirt.h b/orchestrator/compute_controller/plugins/kvm-libvirt/libvirt.h
+index 10f3e06f..0c448d02 100644
+--- a/orchestrator/compute_controller/plugins/kvm-libvirt/libvirt.h
++++ b/orchestrator/compute_controller/plugins/kvm-libvirt/libvirt.h
+@@ -64,6 +64,8 @@ private:
+ 	*	@brief: Create the copy-on-write disk starting from the image base
+ 	*/
+ 	string createImgDisk(string imgBasePath, string folder, string domainName);
++	bool createDatadisk(string config_server_url , string config_user , string config_password , string functional_capabilities,
++                                string tenant_id, string graph_id, string vnf_id, string qcow2_disk_path);
+ 
+ public:
+ 
+diff --git a/orchestrator/compute_controller/plugins/kvm-libvirt/template-base.xml b/orchestrator/compute_controller/plugins/kvm-libvirt/template-base.xml
+index cb41af99..ae2d36f6 100644
+--- a/orchestrator/compute_controller/plugins/kvm-libvirt/template-base.xml
++++ b/orchestrator/compute_controller/plugins/kvm-libvirt/template-base.xml
+@@ -1,7 +1,7 @@
+ <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
+ 	<name>template-base</name> <!-- This information is set according to the VNF template -->
+-	<memory unit='KiB'>4194304</memory> <!--TODO: this must be set according to the template-->
+-	<currentMemory unit='KiB'>4194304</currentMemory> <!--TODO: this must be set according to the template-->
++	<memory unit='KiB'>5242880</memory> <!--TODO: this must be set according to the template-->
++	<currentMemory unit='KiB'>5242880</currentMemory> <!--TODO: this must be set according to the template-->
+ 	<vcpu placement='static'>4</vcpu> <!--TODO: this must be set according to the template-->
+ 	<resource>
+ 		<partition>/machine</partition>
+@@ -30,6 +30,10 @@
+ 	<on_reboot>restart</on_reboot>
+ 	<on_crash>destroy</on_crash>
+ 	<devices>
++		<channel type="unix">
++			<source mode="bind"/>
++			<target type="virtio" name="org.qemu.guest_agent.0"/>
++		</channel>
+   		<rng model='virtio'>
+ 	    		<rate period="2000" bytes="1234"/>
+     			<backend model='random'>/dev/random</backend>
