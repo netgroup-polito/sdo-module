@@ -65,8 +65,8 @@ public class App
 
 		int timeout_ms = 240000;
 
+		//Setting up Logging
 		org.apache.log4j.BasicConfigurator.configure();
-		
 		System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
 		System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
 		System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "ERROR");
@@ -113,26 +113,25 @@ public class App
 		h.setLevel(Level.FINEST);
 		Logger.getGlobal().addHandler(h);
 		Logger.getGlobal().setUseParentHandlers(false);
-		
-		//SelfOrchestratorImperativo soi = new SelfOrchestratorImperativo();
-		//soi.run();
 
+		//Setup connection with DatastoreClient
 		DatastoreClient datastore = new DatastoreClient(datastore_username, datastore_password, datastore_url, timeout_ms);
+
+		//Setup connection with InfrastructureOrchestratorUniversalNode
 		orchestrator = new InfrastructureOrchestratorUniversalNode(controller_username, controller_password, controller_url,
 				timeout_ms);
+
+		//Setup connection with ConfigurationOrchestratorFrog4
 		configurationService = new ConfigurationOrchestratorFrog4(configuration_username, configuration_password,
 				configuration_url, timeout_ms);
 
-
+		//Setting up components
 		Framework myFramework = new MyFramework();
 		ResourceManager myResourceManager = new MyResourceManager();
 
-
 		SelfOrchestrator mySelfOrchestrator = new MySelfOrchestrator(myFramework);
 
-
-		//Setting default NFFG
-
+		//Building default NFFG
 		NF_FGExtended nffg=null;
 		try
 		{
@@ -147,7 +146,7 @@ public class App
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
+
 		try {
 			Infrastructure myInfrastructure = new MyInfrastructure(orchestrator,
 					datastore,
@@ -156,6 +155,7 @@ public class App
 					mySelfOrchestrator.getName(),
 					tenant_id);
 
+			//Loading default NFFG
 			try {
 				orchestrator.addNFFG(nffg);
 			} catch (JsonProcessingException | InfrastructureOrchestratorHTTPException
@@ -169,7 +169,10 @@ public class App
 			myFramework.setSelfOrchestrator(mySelfOrchestrator);
 			myFramework.setInfrastructure(myInfrastructure);
 
+			//Compute the first configuration for the service
 			myResourceManager.newServiceConfiguration();
+
+			//Start the main loop
 			myFramework.mainLoop();
 		}
 		catch(Exception ex)

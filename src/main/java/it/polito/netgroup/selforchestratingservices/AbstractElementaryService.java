@@ -17,7 +17,6 @@ public abstract class AbstractElementaryService implements ElementaryService
 		implementations = new ArrayList<>();
 		currentImplementation = null;
 	}
-	
 
 	@Override
 	public String getName()
