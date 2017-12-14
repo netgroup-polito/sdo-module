@@ -10,9 +10,15 @@ Dependencies:
 	- Install jq and libguestmount (libguestfs-tools on Ubuntu for the command 'guestmount')
 	- The file add_datadisk_files.sh placed in un-orchestrator/orchestrator/compute-node/plugins/kvm-libvirt/scripts/add_datadisk_files.sh and make executable
 - The GUI at commit bcd00c5b98db463e99adf525b4a4a095099fdcb8
-- The datastore at commit d68d9ab4489ef7485d706f4f48c6ab7c67f384af
+- The Datastore at commit d68d9ab4489ef7485d706f4f48c6ab7c67f384af
 - The Universal Node SDO ResourceManager
-- The Datastore
-- The Configuration Service at commit a89f26f64cb22c11f8bb149dfc386f1a351a5b94 with the patch ConfigurationService.patch applied
+- Unzip the ConfigurationService provided in this Repository (frog4-config-service.zip).
 - haveged daemon installed and running on the host
 - guestmount util installed
+
+
+In order to run the self orchestrating module:
+
+- Compile a service model with a compiler and put the output classes inside the auto package
+- Run the self-orchestrating module
+
