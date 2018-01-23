@@ -19,13 +19,10 @@ public class MySelfOrchestrator extends AbstractSelfOrchestrator
 	public MySelfOrchestrator(Framework framework)
 	{
 		super(framework,"test_nffg_transcoder_demo.json");
-		String lbmac = new String("02:01:02:03:04:05");
-		variables.setVar("lbmac", lbmac);
-		
 
 		transcoderelementaryservice  = new TranscoderElementaryService(variables);
 		elementaryServices.put(transcoderelementaryservice.getName(),transcoderelementaryservice);
 		infrastructureEventHandler = new MyInfrastructureEventHandler(variables);
-		name="test_nffg_nat";
+		name="test_nffg_transmitter";
 	}
 }

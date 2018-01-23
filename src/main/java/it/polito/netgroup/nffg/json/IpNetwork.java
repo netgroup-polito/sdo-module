@@ -34,10 +34,8 @@ public class IpNetwork
 	      return false;
 	      
 	    //  Check if the address is part of the subnet
-	    
-	    if (( ipaddrInt & maskInt) == subnetInt)
-	      return true;
-	    return false;
+
+		return (ipaddrInt & maskInt) == subnetInt;
 	}
 
 	private int parseNumericAddress(String ipaddr)

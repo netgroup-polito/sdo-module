@@ -3,12 +3,12 @@ package it.polito.netgroup.configurationorchestrator;
 public interface VnfForConfigurationInterface
 {
 
-	public String getNffgId();
+	String getNffgId();
 
-	public String getTenantId();
+	String getTenantId();
 
-	public String getId();
+	String getId();
 	
-	public String getFunctionalCapability();
+	String getFunctionalCapability();
 
 }

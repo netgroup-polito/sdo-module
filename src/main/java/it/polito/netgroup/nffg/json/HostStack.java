@@ -74,7 +74,7 @@ public class HostStack
 			}
 		}
 
-		private Configuration(String value)
+		Configuration(String value)
 		{
 			this.value = value;
 		}

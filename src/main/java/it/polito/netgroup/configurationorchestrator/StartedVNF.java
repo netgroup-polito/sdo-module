@@ -35,7 +35,7 @@ public class StartedVNF
 		return vnf_id;
 	}
 
-	public static List<StartedVNF> getFromJson(String json) throws JsonParseException, JsonMappingException, IOException
+	public static List<StartedVNF> getFromJson(String json) throws IOException
 	{
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.readValue(json,

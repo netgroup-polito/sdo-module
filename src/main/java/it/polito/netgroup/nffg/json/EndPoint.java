@@ -202,7 +202,7 @@ public class EndPoint
 			}
 		}
 
-		private Type(String value)
+		Type(String value)
 		{
 			this.value = value;
 		}

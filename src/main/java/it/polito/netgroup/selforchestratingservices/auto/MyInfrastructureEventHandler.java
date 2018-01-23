@@ -17,7 +17,7 @@ public class MyInfrastructureEventHandler extends AbstractInfrastructureEventHan
 	public MyInfrastructureEventHandler(Variables var)
 	{
 		super(var);
-	};
+	}
 
 	@Override
 	public void on_resource_added(Resource resource) throws Exception {

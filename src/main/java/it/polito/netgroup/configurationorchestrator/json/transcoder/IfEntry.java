@@ -10,7 +10,7 @@ public class IfEntry
 		L3,
 		trasparent,
 		not_defined
-	};
+	}
 
 	@JsonProperty("id")
 	private String id;

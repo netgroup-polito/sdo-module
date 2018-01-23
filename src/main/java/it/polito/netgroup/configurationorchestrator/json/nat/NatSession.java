@@ -54,14 +54,14 @@ public class NatSession extends EqualKeyObject
         TIME_WAIT,
         CLOSE,
         LISTEN
-	};
-	
+	}
+
 	public enum PROTOCOL {
 		ICMP,
 		UDP,
 		TCP
-	};
-	
+	}
+
 	@JsonProperty("protocol")
 	private PROTOCOL protocol;
 	@JsonProperty("src_address")
@@ -216,8 +216,6 @@ public class NatSession extends EqualKeyObject
 				return false;
 		} else if (!translated_address.equals(other.translated_address))
 			return false;
-		if (translated_port != other.translated_port)
-			return false;
-		return true;
+		return translated_port == other.translated_port;
 	}	
 }

@@ -47,7 +47,7 @@ public class NF_FGTemplateExtended extends NF_FGTemplate
 		return vnf;
 	}
 
-	public static NF_FGTemplateExtended getFromJson(String json) throws JsonParseException, JsonMappingException, IOException
+	public static NF_FGTemplateExtended getFromJson(String json) throws IOException
 	{
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.readValue(json, NF_FGTemplateExtended.class);

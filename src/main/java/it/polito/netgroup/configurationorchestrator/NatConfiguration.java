@@ -97,7 +97,7 @@ public class NatConfiguration extends AbstractConfigurationSDN
 		throw new InvalidInterfaceLabel(interfaceLabel.getValue());
 	}
 
-	public static NatConfiguration getFromJson(String _tenant_id , String _nffg_id, String _vnf_id , String _fc , String json) throws JsonParseException, JsonMappingException, IOException
+	public static NatConfiguration getFromJson(String _tenant_id , String _nffg_id, String _vnf_id , String _fc , String json) throws IOException
 	{
 		NatConfiguration cfg = new NatConfiguration(_tenant_id, _nffg_id, _vnf_id,_fc);
 		ObjectMapper mapper = new ObjectMapper();

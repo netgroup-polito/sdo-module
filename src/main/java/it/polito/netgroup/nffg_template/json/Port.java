@@ -189,7 +189,7 @@ public class Port
 			}
 		}
 
-		private Technology(String value)
+		Technology(String value)
 		{
 			this.value = value;
 		}

@@ -63,7 +63,7 @@ public class App
 
 		String tenant_id = "2";
 
-		int timeout_ms = 240000;
+		int timeout_ms = 2400000;
 
 		//Setting up Logging
 		org.apache.log4j.BasicConfigurator.configure();

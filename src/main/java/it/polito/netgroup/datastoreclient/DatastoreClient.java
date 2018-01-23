@@ -124,11 +124,11 @@ public class DatastoreClient
 				return NF_FGTemplateExtended.getFromJson(json);
 			} catch (UnsupportedOperationException | IOException e)
 			{
-				throw new DatastoreClientHTTPException("HTTP IO Error : " + e.getMessage());
+				throw new DatastoreClientHTTPException("HTTP IO Error : " + e.getMessage()+"template with name " + template_name);
 			}
 		} else
 		{
-			throw new DatastoreClientHTTPException("Invalid HTTP Status : " + http_status);
+			throw new DatastoreClientHTTPException("Invalid HTTP Status : " + http_status +" template with name " + template_name + " " + base_url + "/v2/nf_template/" + template_name);
 		}
 	}
 }

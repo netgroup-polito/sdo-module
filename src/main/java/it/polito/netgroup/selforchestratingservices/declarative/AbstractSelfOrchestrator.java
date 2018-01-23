@@ -27,7 +27,7 @@ public abstract class AbstractSelfOrchestrator implements SelfOrchestrator
 	@Override
 	public String getName()
 	{
-		return name;
+		return "test_nffg_nat"; //Workaround: fix before VM metadata creation function inside the UN
 	}
 	
 	@Override

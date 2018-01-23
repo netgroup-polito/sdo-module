@@ -305,7 +305,7 @@ public class NF_FGTemplate
 			}
 		}
 
-		private UriImageType(String value)
+		UriImageType(String value)
 		{
 			this.value = value;
 		}
@@ -353,7 +353,7 @@ public class NF_FGTemplate
 			}
 		}
 
-		private VnfType(String value)
+		VnfType(String value)
 		{
 			this.value = value;
 		}
