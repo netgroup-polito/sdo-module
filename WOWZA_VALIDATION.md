@@ -6,14 +6,14 @@ This file shows you the steps that must be followed in order to repeat the valid
  
 - The SDO infrastructure must already be installed as described inside the [README](README.md)
 - The images required (transmitter, switch and wowza transcoder) must be already loaded inside the datastore repository:
-        	- The transmitter image simply transmits a recorded video to Wowza
-        	- The switch image implements an L2 Ethernet switch used to build up two different networks:
-                    	- The management network that connects Wowza with the Configuration Service running on the host.
-                               	- Wowza is configured with the IP 192.168.40.10/24 on the management interface.
-                    	- The service network that connects the Transmitter, Wowza and the VLC Client.
-                               	- Wowza is configured with the IP 192.168.10.100/24
-                               	- The transmitter receives the IP from DHCP.
-        	- The Wowza image contains an already configured Wowza with it's own configuration agent
+  - The transmitter image simply transmits a recorded video to Wowza
+  - The switch image implements an L2 Ethernet switch used to build up two different networks:
+  - The management network that connects Wowza with the Configuration Service running on the host.
+    - Wowza is configured with the IP 192.168.40.10/24 on the management interface.
+  - The service network that connects the Transmitter, Wowza and the VLC Client.
+    - Wowza is configured with the IP 192.168.10.100/24
+    - The transmitter receives the IP from DHCP.
+  - The Wowza image contains an already configured Wowza with it's own configuration agent
 - An external host that runs the [modified VLC client](???) and takes the validation measurements (this host must reach one ip of the Wowza VNF)
 - You can run the SDO module wherever you want, but it must reach the Universal Node controller, the datastore, the Configuration service and the Resource manager.
  
@@ -36,13 +36,14 @@ All the interactions between the SDO module and the Wowza VNF passthrough the Co
 - Compile&run the SDO module (e.g. inside IntelliJ Idea)
 - If everything is OK, after some minutes you will periodically see as output of the SDO **dd/mm/YYYY hh:ii:ss INFO selforchestratingservices.declarative_new.MyFramework mainLoop: Going to sleep**
 - If after some minutes, you periodically see **dd/mm/YYYY hh:ii:ss FINE configurationorchestrator.ConfigurationOrchestratorFrog4 waitUntilStarted: [...]** this means that the configuration service hasn't discovered the Wowza VM so:
-        	-Check that the Configuration Agent is running inside the Wowza VM.
-        	-Check the connectivity between the Wowza VM and the Configuration service.
-        	-Check that the Configuration service and DoubleDecker are running on the host.
+  -Check that the Configuration Agent is running inside the Wowza VM.
+  -Check the connectivity between the Wowza VM and the Configuration service.
+  -Check that the Configuration service and DoubleDecker are running on the host.
  
 - After that, The SDO have loaded the base NFFG (with the transmitter, switches, ... ) and have started the new Wowza instance with the available resources.
 - Now you can launch the modified VLC client on the external host and connect to Wowza with the URL **http://WOWZA_IP:1935/live/live_360p/playlist.m3u8**.
-        	- If you get some errors such as 404, look inside known bugs about Wowza licence system.
+  - If you get some errors such as 404, look inside known bugs about Wowza licence system.
+
 - If you would like to modify the available resources inside the infrastructure, you can use the Resource manager [CLI](https://github.com/netgroup-polito/un-sdo-resourcemanager).
 - The SDO will react as soon as it detect the changes
  
@@ -68,8 +69,8 @@ With the "TransrateLight" template, with the "_360p" stream you will get a strea
 - Sometimes the UN doesn't correctly create the /metadata folder inside the Wowza VM that contains the metadata used by the configuration agent. In that case, simply restart the SDO orchestrator (the NFFG will be removed and loaded again)
 - Sometimes the Wowza VM is unable to reach the host interface with ip 192.168.40.1 . In that case reboot the host
 - Sometimes the Wowza license system disable the transcoding capabilities.
-        	- To fix this, reload the Wowza server by using the web interface on *:8088, login with netgroup as username and with empty password.
-        	- Click on "Server" in the menu bar and then "restart" (top-left, under "Sign out")
+  - To fix this, reload the Wowza server by using the web interface on *:8088, login with netgroup as username and with empty password.
+  - Click on "Server" in the menu bar and then "restart" (top-left, under "Sign out")
  
 ## Selforch script
  
