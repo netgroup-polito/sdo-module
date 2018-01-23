@@ -14,7 +14,7 @@ This file shows you the steps that must be followed in order to repeat the valid
     - Wowza is configured with the IP 192.168.10.100/24
     - The transmitter receives the IP from DHCP.
   - The Wowza image contains an already configured Wowza with it's own configuration agent
-- An external host that runs the [modified VLC client](???) and takes the validation measurements (this host must reach one ip of the Wowza VNF)
+- An external host that runs the [modified VLC client](https://github.com/netgroup-polito/vlc_quality_meter) and takes the validation measurements (this host must reach one ip of the Wowza VNF)
 - You can run the SDO module wherever you want, but it must reach the Universal Node controller, the datastore, the Configuration service and the Resource manager.
  
 ![NFFG with connections](nffg-connections.png)
