@@ -1,8 +1,8 @@
-#Validation of the SDO architecture with Wowza
+# Validation of the SDO architecture with Wowza
  
 This file shows you the steps that must be followed in order to repeat the validation of the SDO architecture.
  
-##Requisites & details
+## Requisites & details
  
 - The SDO infrastructure must already be installed as described inside the [README](README.md)
 - The images required (transmitter, switch and wowza transcoder) must be already loaded inside the datastore repository:
@@ -29,40 +29,40 @@ All the interactions between the SDO module and the Wowza VNF passthrough the Co
 - The Configuration service API are used to get the state of a VNF and to update its configuration.
 - The Resource manager API are used to get the available resources and to ask/release new ones.
  
-##Run the validation
+## Run the validation
  
 - Start all the services on the Universal Node Host (un-orchestrator/control.sh start)
 - Compile the provided [model](https://github.com/netgroup-polito/sdo-compiler/blob/master/modello_transcoder.json)
 - Compile&run the SDO module (e.g. inside IntelliJ Idea)
-- If everything is OK, after some minutes you will periodically see as output of the SDO "dd/mm/YYYY hh:ii:ss INFO selforchestratingservices.declarative_new.MyFramework mainLoop: Going to sleep"
-- If after some minutes, you periodically see "dd/mm/YYYY hh:ii:ss FINE configurationorchestrator.ConfigurationOrchestratorFrog4 waitUntilStarted: [...]" this means that the configuration service hasn't discovered the Wowza VM so:
+- If everything is OK, after some minutes you will periodically see as output of the SDO **dd/mm/YYYY hh:ii:ss INFO selforchestratingservices.declarative_new.MyFramework mainLoop: Going to sleep**
+- If after some minutes, you periodically see **dd/mm/YYYY hh:ii:ss FINE configurationorchestrator.ConfigurationOrchestratorFrog4 waitUntilStarted: [...]** this means that the configuration service hasn't discovered the Wowza VM so:
         	-Check that the Configuration Agent is running inside the Wowza VM.
         	-Check the connectivity between the Wowza VM and the Configuration service.
         	-Check that the Configuration service and DoubleDecker are running on the host.
  
 - After that, The SDO have loaded the base NFFG (with the transmitter, switches, ... ) and have started the new Wowza instance with the available resources.
-- Now you can launch the modified VLC client on the external host and connect to Wowza with the URL "http://WOWZA_IP:1935/live/live_360p/playlist.m3u8".
+- Now you can launch the modified VLC client on the external host and connect to Wowza with the URL **http://WOWZA_IP:1935/live/live_360p/playlist.m3u8**.
         	- If you get some errors such as 404, look inside known bugs about Wowza licence system.
 - If you would like to modify the available resources inside the infrastructure, you can use the Resource manager [CLI](https://github.com/netgroup-polito/un-sdo-resourcemanager).
 - The SDO will react as soon as it detect the changes
  
-##URL details
+## URL details
  
-The format of the URL used by Wowza is "http://WOWZA_IP:1935/application_name/application_name[transcoder_stream_name]/type_of_stream":
-- Application name is "live"
+The format of the URL used by Wowza is **http://WOWZA_IP:1935/application_name/application_name[transcoder_stream_name]/type_of_stream**:
+- Application name is **live**
 - Transcoder stream name depends on the stream that you want to watch. Look inside Application->live->Transcoder->(select a transcoder template)->stream name).
 - Type of stream depends on the protocol used (Use the test player available inside Wowza for more information).
  
 With the "transcode (default)" template, with the "_360p" stream you will get a stream with 200Kbps and with frame size of 640x360 pixels.
 With the "TransrateLight" template, with the "_360p" stream you will get a stream equal to the input stream.
  
-##Use full tools
+## Use full tools
  
 - Install the "selforch" script onto your PC and run the SelfOrchestrator from your PC
 - Use the VNC console of the KVM VMs: they are listening on TCP ports from 5900 to 59XX on localhost (setup a ssh tunnel)
 - Use un-orchestrator/control.sh start or un-orchestrator/control.sh stop to start/stop all of the software on the orchestrator host
  
-##Known bugs
+## Known bugs
  
 - The configuration agent of Wowza doesn't set the default gateway.
 - Sometimes the UN doesn't correctly create the /metadata folder inside the Wowza VM that contains the metadata used by the configuration agent. In that case, simply restart the SDO orchestrator (the NFFG will be removed and loaded again)
@@ -71,7 +71,7 @@ With the "TransrateLight" template, with the "_360p" stream you will get a strea
         	- To fix this, reload the Wowza server by using the web interface on *:8088, login with netgroup as username and with empty password.
         	- Click on "Server" in the menu bar and then "restart" (top-left, under "Sign out")
  
-##Selforch script
+## Selforch script
  
 ```
 #!/bin/bash
